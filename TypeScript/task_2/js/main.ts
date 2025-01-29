@@ -38,12 +38,18 @@ class Teacher implements TeacherInterface {
     }
 }
 
-function createEmployee(
-    salary: number | string
-): TeacherInterface | DirectorInterface {
-    if (typeof salary === "number" && salary < 500) {
-        return new Teacher()
-    } else {
-        return new Director()
-    }
+function createEmployee(salary: number | string): TeacherInterface | DirectorInterface {
+    return typeof salary === "number" && salary < 500 ? new Teacher() : new Director()
+}
+
+console.log(createEmployee(200))
+
+function isDirector(
+    employee: DirectorInterface | TeacherInterface
+): employee is DirectorInterface {
+    return (employee as DirectorInterface).workDirectorTasks !== undefined
+}
+
+function executeWork(employee: DirectorInterface | TeacherInterface): string {
+    return isDirector(employee) ? employee.workDirectorTasks() : employee.workTeacherTasks()
 }
