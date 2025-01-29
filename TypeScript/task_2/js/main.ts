@@ -53,3 +53,9 @@ function isDirector(
 function executeWork(employee: DirectorInterface | TeacherInterface): string {
     return isDirector(employee) ? employee.workDirectorTasks() : employee.workTeacherTasks()
 }
+
+type Subjects = "Math" | "History"
+
+function teachClass(todayClass: Subjects): string {
+    return todayClass === "Math" ? "Teaching Math" : todayClass === "History" ? "Teaching History" : undefined
+}
