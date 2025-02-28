@@ -29,6 +29,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "babel": "^5.8.38",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
