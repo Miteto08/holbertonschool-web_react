@@ -1,75 +1,67 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import App from './App';
-import Notifications from '../Notifications/Notifications';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Footer from '../Footer/Footer';
-import CourseList from '../CourseList/CourseList';
+import React from 'react'
+import './App.css'
+import Header from '../Header/Header'
+import Login from '../Login/Login'
+import Footer from '../Footer/Footer'
+import Notifications from '../Notifications/Notifications'
+import PropTypes from 'prop-types'
+import CourseList from '../CourseList/CourseList'
+import { getLatestNotification } from '../utils/utils'
 
-describe('<App />', () => {
-  it('renders without crashing', () => {
-    shallow(<App />);
-  });
+class App extends React.Component {
+  static propTypes = {
+    isLoggedIn: PropTypes.bool,
+    logOut: PropTypes.func
+  }
 
-  it('contains the Notifications component', () => {
-    const wrapper = shallow(<App />)
-    expect(wrapper.find(Notifications)).toHaveLength(1);
-  });
+  static defaultProps = {
+    isLoggedIn: false,
+    logOut: () => { }
+  }
 
-  it('contains the Header component', () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(Header)).toHaveLength(1);
-  });
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
 
-  it('contains the Login component', () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(Login)).toHaveLength(1);
-  });
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
 
-  it('contains the Footer component', () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(Footer)).toHaveLength(1);
-  });
+  handleKeyDown = event => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert('Logging you out')
+      this.props.logOut()
+    }
+  }
 
-  it('should not display CourseList when isLoggedIn is false', () => {
-    const wrapper = shallow(<App isLoggedIn={false} />);
-    expect(wrapper.find(CourseList).length).toBe(0);
-  });
+  render() {
+    const isIndex = true
+    const listCourses = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 }
+    ]
+    const listNotifications = [
+      { id: 1, type: 'default', value: 'New course available' },
+      { id: 2, type: 'urgent', value: 'New resume available' },
+      { id: 3, type: 'urgent', value: { __html: getLatestNotification() } }
+    ]
 
-  describe('when isLoggedIn is true', () => {
-    let wrapper;
+    return (
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className="App">
+          <Header />
+          {this.props.isLoggedIn ? (
+            <CourseList listCourses={listCourses} />
+          ) : (
+            <Login />
+          )}
+          <Footer isIndex={isIndex} />
+        </div>
+      </>
+    )
+  }
+}
 
-    beforeEach(() => {
-      wrapper = shallow(<App isLoggedIn={true} />);
-    });
-
-    it('should not include the Login component', () => {
-      expect(wrapper.find(Login).length).toBe(0);
-    });
-
-    it('should include the CourseList component', () => {
-      expect(wrapper.find(CourseList).length).toBe(1);
-    });
-  });
-
-  describe('Keyboard event tests', () => {
-    it('calls logOut function and displays alert when Ctrl+H is pressed', () => {
-      const mockLogOut = jest.fn()
-      const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { })
-
-      const wrapper = shallow(<App logOut={mockLogOut} />)
-      const instance = wrapper.instance()
-
-      instance.componentDidMount()
-
-      const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' })
-      document.dispatchEvent(event)
-
-      expect(alertMock).toHaveBeenCalled()
-      expect(mockLogOut).toHaveBeenCalled()
-
-      alertMock.mockRestore()
-    })
-  })
-})
+export default App
