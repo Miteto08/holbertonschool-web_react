@@ -35,7 +35,11 @@ class App extends React.Component {
         <Notifications listNotifications={listNotifications} />
         <div className="App">
           <Header />
-          {this.props.isLoggedIn ? <CourseList listCourses={listCourses} /> : <Login />}
+          {this.props.isLoggedIn ? (
+            <CourseList listCourses={listCourses} />
+          ) : (
+            <Login />
+          )}
           <Footer isIndex={isIndex} />
         </div>
       </>
