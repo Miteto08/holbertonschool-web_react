@@ -1,6 +1,6 @@
 .Notifications {
-    position: absolute;
-    border: dashed #cf4550 2px;
+  position: absolute;
+    border:dashed #cf4550 2px;
     padding: 10px;
     width: 30%;
     right: 1rem;
@@ -8,16 +8,16 @@
 }
 
 .menuItem {
-    display: flex;
-    justify-content: right;
-    padding: 5px;
-    margin-right: 10px;
+  display: flex;
+  justify-content: right;
+  padding: 5px;
+  margin-right: 10px;
 }
 
 .Notifications li[data-notification-type="default"] {
-    color: #180C5F;
+  color: #180C5F;
 }
 
 .Notifications li[data-notification-type="urgent"] {
-    color: red;
+  color: red;
 }
