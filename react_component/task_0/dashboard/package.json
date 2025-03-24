@@ -2,7 +2,6 @@
   "name": "dashboard",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "webpack-dev-server --mode development --config config/webpack.config.js",
     "test": "jest",
@@ -29,7 +28,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
+    "cheerio": "^1.0.0-rc.10",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
@@ -43,7 +42,7 @@
       "^.+\\.jsx?$": "babel-jest"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!cheerio)/"
+      "/node_modules/(?!(cheerio|parse5|domhandler|dom-serializer|htmlparser2|entities|domelementtype|domutils|css-select|nth-check|boolbase)/)"
     ],
     "moduleNameMapper": {
       "\\.(css|scss)$": "<rootDir>/__mocks__/fileMock.js",
