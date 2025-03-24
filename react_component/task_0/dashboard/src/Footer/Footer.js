@@ -1,6 +1,6 @@
 import React from "react"
 import './Footer.css'
-import { getFullYear, getFooterCopy } from "../utils/utils.js"
+import { getFullYear, getFooterCopy } from "../utils/utils"
 
 function Footer({ isIndex }) {
     return (

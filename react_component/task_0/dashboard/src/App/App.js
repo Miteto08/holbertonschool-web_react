@@ -1,20 +1,38 @@
 import React from 'react'
 import './App.css'
-import Header from '../Header/Header.js'
-import Login from '../Login/Login.js'
-import Footer from '../Footer/Footer.js'
-import Notifications from '../Notifications/Notifications.js'
+import Header from '../Header/Header'
+import Login from '../Login/Login'
+import Footer from '../Footer/Footer'
+import Notifications from '../Notifications/Notifications'
 import PropTypes from 'prop-types'
-import CourseList from '../CourseList/CourseList.js'
-import { getLatestNotification } from '../utils/utils.js'
+import CourseList from '../CourseList/CourseList'
+import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
   static propTypes = {
-    isLoggedIn: PropTypes.bool
+    isLoggedIn: PropTypes.bool,
+    logOut: PropTypes.func
   }
 
   static defaultProps = {
-    isLoggedIn: false
+    isLoggedIn: false,
+    logOut: () => { }
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'h') {
+      event.preventDefault()
+      alert('Logging you out')
+      this.props.logOut()
+    }
   }
 
   render() {
@@ -29,7 +47,6 @@ class App extends React.Component {
       { id: 2, type: 'urgent', value: 'New resume available' },
       { id: 3, type: 'urgent', value: { __html: getLatestNotification() } }
     ]
-
     return (
       <>
         <Notifications listNotifications={listNotifications} />

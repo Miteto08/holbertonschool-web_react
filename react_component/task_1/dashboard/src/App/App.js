@@ -14,7 +14,7 @@ class App extends React.Component {
     logOut: PropTypes.func
   }
 
-  static defaultProps = {
+  staticdefaultProps = {
     isLoggedIn: false,
     logOut: () => { }
   }
@@ -27,7 +27,7 @@ class App extends React.Component {
     document.removeEventListener('keydown', this.handleKeyDown)
   }
 
-  handleKeyDown = event => {
+  handleKeyDown = (event) => {
     if (event.ctrlKey && event.key === 'h') {
       alert('Logging you out')
       this.props.logOut()
@@ -46,7 +46,6 @@ class App extends React.Component {
       { id: 2, type: 'urgent', value: 'New resume available' },
       { id: 3, type: 'urgent', value: { __html: getLatestNotification() } }
     ]
-
     return (
       <>
         <Notifications listNotifications={listNotifications} />

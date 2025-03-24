@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import Footer from './Footer.js'
+import Footer from './Footer'
 
 jest.mock('../utils/utils', () => ({
     getFullYear: jest.fn(() => 2024),

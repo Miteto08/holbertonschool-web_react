@@ -1,11 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import App from './App.js'
-import Notifications from '../Notifications/Notifications.js'
-import Header from '../Header/Header.js'
-import Login from '../Login/Login.js'
-import Footer from '../Footer/Footer.js'
-import CourseList from '../CourseList/CourseList.js'
+import App from './App'
+import Notifications from '../Notifications/Notifications'
+import Header from '../Header/Header'
+import Login from '../Login/Login'
+import Footer from '../Footer/Footer'
+import CourseList from '../CourseList/CourseList'
 
 describe('<App />', () => {
   it('renders without crashing', () => {
@@ -50,6 +50,22 @@ describe('<App />', () => {
 
     it('should include the CourseList component', () => {
       expect(wrapper.find(CourseList).length).toBe(1)
+    })
+  })
+
+  describe('Keyboard event tests', () => {
+    it('calls logOut function and displays alert when Ctrl+H is pressed', () => {
+      const mockLogOut = jest.fn()
+      const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { })
+
+      const wrapper = shallow(<App logOut={mockLogOut} />)
+      const instance = wrapper.instance()
+
+      instance.handleKeyDown({ ctrlKey: true, key: 'h', preventDefault: jest.fn() })
+
+      expect(alertMock).toHaveBeenCalledWith('Logging you out')
+      expect(mockLogOut).toHaveBeenCalled()
+      alertMock.mockRestore()
     })
   })
 });

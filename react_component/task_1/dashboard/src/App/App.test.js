@@ -72,6 +72,4 @@ describe('<App />', () => {
       alertMock.mockRestore()
     })
   })
-
-
-});
+})

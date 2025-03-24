@@ -1,4 +1,4 @@
-import { getFooterCopy, getFullYear, getLatestNotification } from './utils.js'
+import { getFooterCopy, getFullYear, getLatestNotification } from './utils'
 
 test('getFullYear returns the current year', () => {
     expect(getFullYear()).toBe(new Date().getFullYear())

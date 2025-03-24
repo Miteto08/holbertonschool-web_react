@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import CourseListRow from './CourseListRow.js'
+import CourseListRow from './CourseListRow'
 
 describe('CourseListRow Component', () => {
     it('renders one cell with colspan = 2 when isHeader is true and textSecondCell does not exist', () => {
