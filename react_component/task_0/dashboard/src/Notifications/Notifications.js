@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Notifications.css';
 import { getLatestNotification } from '../utils/utils';
-import NotificationItem from './NotificationItem';
-import NotificationItemShape from './NotificationItemShape';
+import NotificationItem from './NotificationItem.js';
+import NotificationItemShape from './NotificationItemShape.js';
 
 function Notifications({ displayDrawer, listNotifications }) {
     const handleClose = () => {

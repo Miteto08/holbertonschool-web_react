@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import CourseList from './CourseList'
-import CourseListRow from './CourseListRow'
+import CourseList from './CourseList.js'
+import CourseListRow from './CourseListRow.js'
 
 describe('CourseList Component', () => {
     it('renders CourseList component without crashing', () => {

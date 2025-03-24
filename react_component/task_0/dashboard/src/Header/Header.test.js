@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import Header from '../Header/Header'
+import Header from '../Header/Header.js'
 import logo from '../assets/holberton-logo.jpg'
 
 describe('<Header />', () => {

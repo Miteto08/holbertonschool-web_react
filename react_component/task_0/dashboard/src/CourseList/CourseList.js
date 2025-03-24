@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CourseListRow from "./CourseListRow";
+import CourseListRow from "./CourseListRow.js";
 import "./CourseList.css";
-import CourseShape from "./CourseShape";
+import CourseShape from "./CourseShape.js";
 
 const CourseList = ({ listCourses }) => {
     return (
