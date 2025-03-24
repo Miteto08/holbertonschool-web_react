@@ -10,29 +10,11 @@ import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
   static propTypes = {
-    isLoggedIn: PropTypes.bool,
-    logOut: PropTypes.func
+    isLoggedIn: PropTypes.bool
   }
 
   static defaultProps = {
-    isLoggedIn: false,
-    logOut: () => { }
-  }
-
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown)
-  }
-
-  handleKeyDown = (event) => {
-    if (event.ctrlKey && event.key === 'h') {
-      event.preventDefault()
-      alert('Logging you out')
-      this.props.logOut()
-    }
+    isLoggedIn: false
   }
 
   render() {
@@ -45,7 +27,7 @@ class App extends React.Component {
     const listNotifications = [
       { id: 1, type: 'default', value: 'New course available' },
       { id: 2, type: 'urgent', value: 'New resume available' },
-      { id: 3, type: 'urgent', value: { __html: getLatestNotification() } }
+      { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
     ]
     return (
       <>

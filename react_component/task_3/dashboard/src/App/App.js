@@ -6,6 +6,8 @@ import Footer from '../Footer/Footer'
 import Notifications from '../Notifications/Notifications'
 import PropTypes from 'prop-types'
 import CourseList from '../CourseList/CourseList'
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom'
+import BodySection from '../BodySection/BodySection'
 import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
@@ -52,10 +54,17 @@ class App extends React.Component {
         <div className="App">
           <Header />
           {this.props.isLoggedIn ? (
-            <CourseList listCourses={listCourses} />
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
           ) : (
-            <Login />
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login />
+            </BodySectionWithMarginBottom>
           )}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
           <Footer isIndex={isIndex} />
         </div>
       </>

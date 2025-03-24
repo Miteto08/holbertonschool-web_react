@@ -6,6 +6,9 @@ import Footer from '../Footer/Footer'
 import Notifications from '../Notifications/Notifications'
 import PropTypes from 'prop-types'
 import CourseList from '../CourseList/CourseList'
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom'
+import BodySection from '../BodySection/BodySection'
+import WithLogging from '../HOC/WithLogging'
 import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
@@ -46,16 +49,26 @@ class App extends React.Component {
       { id: 2, type: 'urgent', value: 'New resume available' },
       { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
     ]
+
+    const LoginWithLogging = WithLogging(Login)
+
     return (
       <>
         <Notifications listNotifications={listNotifications} />
         <div className="App">
           <Header />
           {this.props.isLoggedIn ? (
-            <CourseList listCourses={listCourses} />
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
           ) : (
-            <Login />
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <LoginWithLogging />
+            </BodySectionWithMarginBottom>
           )}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
           <Footer isIndex={isIndex} />
         </div>
       </>
