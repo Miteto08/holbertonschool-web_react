@@ -2,10 +2,11 @@
   "name": "dashboard",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "webpack-dev-server --mode development --config config/webpack.config.js",
-    "test": "jest",
-    "test-watch": "jest --watch",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test-watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "build": "webpack --config config/webpack.config.js"
   },
   "author": "",
