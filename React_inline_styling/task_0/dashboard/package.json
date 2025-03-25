@@ -42,9 +42,5 @@
     "setupFilesAfterEnv": [
       "./setupTests.js"
     ]
-  },
-  "main": "eslint.config.js",
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }
