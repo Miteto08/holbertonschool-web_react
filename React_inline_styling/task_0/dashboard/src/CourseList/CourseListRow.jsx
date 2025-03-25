@@ -1,12 +1,7 @@
 import PropTypes from 'prop-types';
 
-const rowStyle = {
-    backgroundColor: '#f5f5f5ab'
-};
-
-const headerStyle = {
-    backgroundColor: '#deb5b545'
-};
+const headerStyle = { backgroundColor: '#deb5b545' };
+const rowStyle = { backgroundColor: '#f5f5f5ab' };
 
 CourseListRow.propTypes = {
     isHeader: PropTypes.bool.isRequired,
@@ -17,7 +12,7 @@ CourseListRow.propTypes = {
 export default function CourseListRow({
     isHeader = false,
     textFirstCell = '',
-    textSecondCell = null
+    textSecondCell = null,
 }) {
     const style = isHeader ? headerStyle : rowStyle;
 
@@ -26,7 +21,7 @@ export default function CourseListRow({
             {isHeader ? (
                 <>
                     <th colSpan={textSecondCell ? 1 : 2}>{textFirstCell}</th>
-                    {textSecondCell ? <th>{textSecondCell}</th> : null}
+                    {textSecondCell && <th>{textSecondCell}</th>}
                 </>
             ) : (
                 <>
@@ -35,5 +30,5 @@ export default function CourseListRow({
                 </>
             )}
         </tr>
-    )
+    );
 }
