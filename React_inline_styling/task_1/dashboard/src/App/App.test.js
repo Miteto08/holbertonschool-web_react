@@ -9,6 +9,7 @@ import { StyleSheetTestUtils, css } from 'aphrodite';
 import { StyleSheet } from 'aphrodite';
 
 describe('<App />', () => {
+  // Désactiver l'injection de styles Aphrodite pour éviter des erreurs pendant les tests
   StyleSheetTestUtils.suppressStyleInjection();
 
   afterAll(() => {
@@ -47,7 +48,7 @@ describe('<App />', () => {
 
   it('calls logOut function and displays alert when Ctrl+H is pressed', () => {
     const mockLogOut = jest.fn();
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
     const wrapper = shallow(<App logOut={mockLogOut} />);
     const instance = wrapper.instance();
@@ -70,8 +71,8 @@ describe('<App />', () => {
       footer: {
         borderTop: '4px solid #cf4550',
         width: '100%',
-        bottom: 0,
-        left: 0,
+        bottom: '0',
+        left: '0',
         textAlign: 'center',
         fontSize: '20px',
         fontStyle: 'italic',

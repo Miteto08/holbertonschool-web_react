@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { StyleSheet, css } from 'aphrodite';
 import CourseShape from './CourseShape'
 import CourseListRow from './CourseListRow'
-import { StyleSheet, css } from 'aphrodite'
 
 const CourseList = ({ listCourses }) => {
   return (
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginTop: '30px',
     marginLeft: '5%',
-    fontFamily: 'Times New Roman, Times, serif'
-  }
-})
+    fontFamily: `'Times New Roman', Times, serif`,
+  },
+});
 
 export default CourseList

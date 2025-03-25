@@ -3,16 +3,16 @@ import { StyleSheet, css } from 'aphrodite';
 
 function Login() {
   return (
-    <div className={css(styles.body)}>
-      <p>Login to access the full dashboard</p>
-      <form>
-        <label htmlFor="email" className={css(styles.form)}>Email:</label>
-        <input type="email" id="email" name="email" className={css(styles.form, styles.border)} />
-        <label htmlFor="password" className={css(styles.form)}>Password:</label>
-        <input type="password" id="password" name="password" className={css(styles.form, styles.border)} />
-        <button type="submit" className={css(styles.button)}>OK</button>
-      </form>
-    </div>
+      <div className={css(styles.body)}>
+        <p>Login to access the full dashboard</p>
+        <form>
+          <label className={css(styles.form)} htmlFor="email">Email:</label>
+          <input className={css(styles.form, styles.border)} type="email" id="email" name="email" />
+          <label className={css(styles.form)} htmlFor="password">Password:</label>
+          <input className={css(styles.form, styles.border)} type="password" id="password" name="password" />
+          <button className={css(styles.button)} type="submit">OK</button>
+        </form>
+      </div>
   );
 }
 
@@ -36,5 +36,4 @@ const styles = StyleSheet.create({
     border: '1px solid #ccc',
   }
 })
-
 export default Login;

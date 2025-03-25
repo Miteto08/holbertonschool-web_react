@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 import PropTypes from 'prop-types';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -7,9 +8,9 @@ import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import WithLogging from '../HOC/WithLogging'
 import { getLatestNotification } from '../utils/utils';
-import { StyleSheet, css } from 'aphrodite'
+import WithLogging from '../HOC/WithLogging'
+
 
 class App extends React.Component {
   static propTypes = {
@@ -19,7 +20,7 @@ class App extends React.Component {
 
   static defaultProps = {
     isLoggedIn: false,
-    logOut: () => { }
+    logOut: () => {}
   };
 
   componentDidMount() {
@@ -72,26 +73,29 @@ class App extends React.Component {
               Here you will find the latest updates and news from the school.
             </p>
           </BodySection>
-          <Footer isIndex={isIndex} />
+          <div className={css(styles.footer)}>
+            <Footer isIndex={isIndex} />
+          </div>
         </div>
       </>
     )
   }
 }
 
+// Define styles using Aphrodite
 const styles = StyleSheet.create({
   app: {
   },
   footer: {
     borderTop: '4px solid #cf4550',
     width: '100%',
-    bottom: 0,
-    left: 0,
+    bottom: '0',
+    left: '0',
     textAlign: 'center',
     fontSize: '20px',
     fontStyle: 'italic',
-    fontFamily: 'Arial, sans-serif'
-  }
-})
+    fontFamily: 'Arial, sans-serif',
+  },
+});
 
 export default App;
