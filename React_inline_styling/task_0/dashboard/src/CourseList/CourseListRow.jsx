@@ -1,5 +1,13 @@
 import PropTypes from 'prop-types';
 
+const rowStyle = {
+    backgroundColor: '#f5f5f5ab'
+};
+
+const headerStyle = {
+    backgroundColor: '#deb5b545'
+};
+
 CourseListRow.propTypes = {
     isHeader: PropTypes.bool.isRequired,
     textFirstCell: PropTypes.string.isRequired,
@@ -11,17 +19,21 @@ export default function CourseListRow({
     textFirstCell = '',
     textSecondCell = null
 }) {
+    const style = isHeader ? headerStyle : rowStyle;
+
     return (
-        isHeader ? (
-            <tr>
-                <th colSpan={textSecondCell ? 1 : 2}>{textFirstCell}</th>
-                {textSecondCell ? <th>{textSecondCell}</th> : null}
-            </tr>
-        ) : (
-            <tr>
-                <td>{textFirstCell}</td>
-                <td>{textSecondCell}</td>
-            </tr>
-        )
+        <tr style={style}>
+            {isHeader ? (
+                <>
+                    <th colSpan={textSecondCell ? 1 : 2}>{textFirstCell}</th>
+                    {textSecondCell ? <th>{textSecondCell}</th> : null}
+                </>
+            ) : (
+                <>
+                    <td>{textFirstCell}</td>
+                    <td>{textSecondCell}</td>
+                </>
+            )}
+        </tr>
     )
 }
