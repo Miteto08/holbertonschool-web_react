@@ -70,8 +70,8 @@ describe('<App />', () => {
       footer: {
         borderTop: '4px solid #cf4550',
         width: '100%',
-        bottom: '0',
-        left: '0',
+        bottom: 0,
+        left: 0,
         textAlign: 'center',
         fontSize: '20px',
         fontStyle: 'italic',
