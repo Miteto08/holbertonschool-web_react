@@ -17,7 +17,7 @@ class NotificationItem extends React.PureComponent {
     type: 'default',
     value: '',
     html: null,
-    markAsRead: () => {},
+    markAsRead: () => { },
     id: null
   };
 
@@ -35,7 +35,7 @@ class NotificationItem extends React.PureComponent {
     if (html) {
       return (
         <li
-          className={css(style)}
+          className={css(style, styles.media)}
           data-notification-type={type}
           onClick={this.handleClick}
           dangerouslySetInnerHTML={html}
@@ -43,7 +43,7 @@ class NotificationItem extends React.PureComponent {
       )
     } else {
       return (
-        <li  className={css(style)} data-notification-type={type} onClick={this.handleClick}>
+        <li className={css(style, styles.media)} data-notification-type={type} onClick={this.handleClick}>
           {value}
         </li>
       )
@@ -52,6 +52,13 @@ class NotificationItem extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  media: {
+    '@media (max-width: 900px)': {
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px'
+    }
+  },
   default: {
     color: '#180C5F',
   },

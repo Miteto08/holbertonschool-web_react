@@ -37,15 +37,7 @@ class Notifications extends React.Component {
         {displayDrawer ? (
           <div className={css(styles.notifications)}>
             <button
-              style={{
-                position: 'absolute',
-                top: 10,
-                right: 10,
-                background: 'transparent',
-                border: 'none',
-                fontSize: '20px',
-                cursor: 'pointer'
-              }}
+              className={css(styles.closeBtn)}
               aria-label="Close"
               onClick={this.handleClose}
             >
@@ -86,6 +78,23 @@ const styles = StyleSheet.create({
     width: '30%',
     right: '1rem',
     top: '4rem',
+    '@media (max-width: 900px)': {
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      border: 'none',
+      padding: 0,
+      backgroundColor: 'white'
+    }
+  },
+  ul: {
+    '@media (max-width: 900px)': {
+      display: 'flex',
+      justifyContent: 'right',
+      padding: 0,
+      listStyle: 'none',
+      fontSize: '20px'
+    }
   },
   menuItem: {
     display: 'flex',
@@ -93,6 +102,24 @@ const styles = StyleSheet.create({
     padding: '5px',
     marginRight: '10px',
   },
+  closeBtn: {
+    position: 'absolute',
+    right: '1rem',
+    top: '1rem',
+    fontSize: '1.5rem',
+    border: 'none',
+    background: 'none',
+    cursor: 'pointer',
+    '@media (max-width: 900px)': {
+      position: 'absolute',
+      right: '1rem',
+      top: '1rem',
+      fontSize: '1.5rem',
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer'
+    }
+  }
 })
 
 export default Notifications;

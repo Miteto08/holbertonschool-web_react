@@ -2,27 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Notifications from './Notifications';
 import NotificationItem from './NotificationItem';
-import { StyleSheetTestUtils, css, StyleSheet } from 'aphrodite';
-
-const styles = StyleSheet.create({
-  notifications: {
-    position: 'absolute',
-    border: 'dashed #cf4550 2px',
-    padding: '10px',
-    width: '30%',
-    right: '1rem',
-    top: '4rem',
-  },
-  menuItem: {
-    display: 'flex',
-    justifyContent: 'right',
-    padding: '5px',
-    marginRight: '10px',
-  },
-});
-
-const menuItemClassName = css(styles.menuItem);
-const notificationsClassName = css(styles.notifications);
+import { StyleSheetTestUtils } from 'aphrodite';
 
 describe('Notifications Component', () => {
   beforeAll(() => {
@@ -40,14 +20,14 @@ describe('Notifications Component', () => {
   describe('Renders correct elements based on displayDrawer prop', () => {
     it('renders the menu item when displayDrawer is false', () => {
       const wrapper = shallow(<Notifications displayDrawer={false} />);
-      expect(wrapper.find(`.${menuItemClassName}`).exists()).toBe(true);
-      expect(wrapper.find(`.${notificationsClassName}`).exists()).toBe(false);
+      expect(wrapper.find('div').at(0).text()).toContain('Your notifications');
+      expect(wrapper.find('div').at(1).exists()).toBe(false);
     });
 
     it('renders the menu item and notifications div when displayDrawer is true', () => {
       const wrapper = shallow(<Notifications displayDrawer={true} />);
-      expect(wrapper.find(`.${menuItemClassName}`).exists()).toBe(true);
-      expect(wrapper.find(`.${notificationsClassName}`).exists()).toBe(true);
+      expect(wrapper.find('div').at(0).text()).toContain('Your notifications');
+      expect(wrapper.find('div').at(1).exists()).toBe(true);
     });
   });
 

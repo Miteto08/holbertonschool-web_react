@@ -40,15 +40,15 @@ const styles = StyleSheet.create({
     display: 'inline-block',
     '@media (min-width: 900px)': {
       display: 'flex'
-    },
-    label: {
-      marginRight: '10px',
-      fontWeight: 'bold'
-    },
-    input: {
-      border: '1px solid #ccc',
-      padding: '5px'
     }
+  },
+  label: {
+    marginRight: '10px',
+    fontWeight: 'bold'
+  },
+  input: {
+    border: '1px solid #ccc',
+    padding: '5px'
   }
 })
 export default Login;
