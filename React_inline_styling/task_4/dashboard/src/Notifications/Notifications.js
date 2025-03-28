@@ -32,9 +32,13 @@ class Notifications extends React.Component {
   render() {
     const { displayDrawer, listNotifications } = this.props
     return (
-      <div className={css(styles.menuItem)}>
-        <p>Your notifications</p>
-        {displayDrawer ? (
+      <>
+        {!displayDrawer && (
+          <div className={css(styles.menuItem)}>
+            <p>Your notifications</p>
+          </div>
+        )}
+        {displayDrawer && (
           <div className={css(styles.notifications)}>
             <button
               className={css(styles.closeBtn)}
@@ -64,10 +68,21 @@ class Notifications extends React.Component {
               </ul>
             )}
           </div>
-        ) : null}
-      </div>
+        )}
+      </>
     )
   }
+}
+
+const opacityFrames = {
+  '0%': { opacity: 0.5 },
+  '100%': { opacity: 1 }
+}
+
+const bounceFrames = {
+  '0%': { transform: 'translateY(0)' },
+  '50%': { transform: 'translateY(-5px)' },
+  '100%': { transform: 'translateY(5px)' }
 }
 
 const styles = StyleSheet.create({
@@ -87,11 +102,26 @@ const styles = StyleSheet.create({
       backgroundColor: 'white'
     }
   },
+  ul: {
+    '@media (max-width: 900px)': {
+      display: 'flex',
+      justifyContent: 'right',
+      padding: 0,
+      listStyle: 'none',
+      fontSize: '20px'
+    }
+  },
   menuItem: {
     display: 'flex',
     justifyContent: 'right',
     padding: '5px',
     marginRight: '10px',
+    cursor: 'pointer',
+    animationName: [bounceFrames, opacityFrames],
+    animationDuration: '0.2s, 0.2s',
+    animationIterationCount: '3, 3',
+    animationTimingFunction: 'ease-in-out, ease-in-out',
+    animationFillMode: 'forwards, forwards'
   },
   closeBtn: {
     position: 'absolute',
