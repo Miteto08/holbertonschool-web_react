@@ -70,7 +70,7 @@ describe("fetchNotifications async thunk", () => {
     });
 
     it("should handle fetchNotifications.rejected when base URL or port is incorrect", async () => {
-        const incorrectBaseURL = "http://localhost:5173";
+        const incorrectBaseURL = "http://loclhost:5173";
         mock.onGet(`${incorrectBaseURL}/notifications.json`).networkError();
         const dispatch = jest.fn();
         const getState = jest.fn();
@@ -80,8 +80,8 @@ describe("fetchNotifications async thunk", () => {
         }));
     });
 
-    test('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
-        const incorrectEndpoint = 'http://localhost:5173/notifictions.json';
+    it('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
+        const incorrectEndpoint = 'http://localhost:5173/notificions.json';
         mock.onGet(incorrectEndpoint).reply(404);
         const dispatch = jest.fn();
         const getState = jest.fn();
@@ -93,7 +93,7 @@ describe("fetchNotifications async thunk", () => {
         );
     });
 
-    test('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
+    it('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
         const notifications = [
             { id: 1, type: "default", value: "New course available" },
             { id: 2, type: "urgent", value: "New resume available" },
