@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "jest-environment-jsdom": "^29.7.0"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
+    "react-redux": "^9.2.0"
   }
 }
