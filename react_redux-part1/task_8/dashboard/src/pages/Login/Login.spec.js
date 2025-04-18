@@ -23,10 +23,10 @@ describe('Login', () => {
         expect(screen.getByText(/login to access the full dashboard/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-        expect((screen.getByText(/ok/i)));
+        expect(screen.getByText(/ok/i)).toBeInTheDocument();
     });
 
-    it('Should dispatches login action on form submission', () => {
+    it('Should dispatches login action on form submission with valid data', () => {
         render(
             <Provider store={store}>
                 <Login />
@@ -42,14 +42,14 @@ describe('Login', () => {
         expect(screen.getByText(/ok/i)).not.toBeDisabled();
     });
 
-    it("Should not dispatches login action on form submission", () => {
+    it('Should not dispatches login action on form submission with invalid data', () => {
         render(
             <Provider store={store}>
                 <Login />
             </Provider>
         );
         fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
-        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: '453' } });
+        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: '123' } });
         fireEvent.click(screen.getByText(/ok/i));
         const state = store.getState().auth;
         expect(state.isLoggedIn).toBe(false);

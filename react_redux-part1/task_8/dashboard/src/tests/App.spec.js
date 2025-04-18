@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
 import authSlice, { logout, login } from '../features/auth/authSlice';
 import notificationsSlice from '../features/notifications/notificationsSlice';
-import coursesSlice from '../features/courses/coursesSlice';
+import coursesSlice, { clearCourses } from '../features/courses/coursesSlice';
 
 describe('App Component Integration Tests', () => {
     let store;
@@ -105,7 +105,12 @@ describe('App Component Integration Tests', () => {
             ],
             );
         });
-        act(() => store.dispatch(logout()))
-        expect(store.getState().courses.courses).toHaveLength(0);
+        act(() => {
+            store.dispatch(logout());
+            store.dispatch(clearCourses());
+        });
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toHaveLength(0);
+        });
     });
 });

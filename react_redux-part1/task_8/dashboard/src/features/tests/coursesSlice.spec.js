@@ -1,4 +1,4 @@
-import coursesSlice, { fetchCourses } from '../courses/coursesSlice';
+import coursesSlice, { clearCourses, fetchCourses } from '../courses/coursesSlice';
 import { logout } from '../auth/authSlice';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -8,12 +8,12 @@ const mock = new MockAdapter(axios);
 describe('coursesSlice', () => {
     const initialState = {
         courses: [],
+        status: 'idle',
+        error: null
     };
 
     it('Should return the initial state', () => {
-        expect(coursesSlice(undefined, { type: 'unknown' })).toEqual(
-            initialState
-        );
+        expect(coursesSlice(undefined, { type: 'unknown' })).toEqual(initialState);
     });
 
     describe('fetchCourses async thunk', () => {
@@ -22,16 +22,34 @@ describe('coursesSlice', () => {
             const state = coursesSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
+                status: 'loading'
+            });
+        });
+
+        it('Should handle fetchCourses.fulfilled', () => {
+            const mockCourses = [
+                { id: 1, name: 'ES6', credit: 60 },
+                { id: 2, name: 'Webpack', credit: 20 }
+            ];
+            const action = { type: fetchCourses.fulfilled.type, payload: mockCourses };
+            const state = coursesSlice(initialState, action);
+            expect(state).toEqual({
+                ...initialState,
+                status: 'succeeded',
+                courses: mockCourses
             });
         });
 
         it('Should handle fetchCourses.rejected', () => {
             const action = {
                 type: fetchCourses.rejected.type,
+                error: { message: 'Network error' }
             };
             const state = coursesSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
+                status: 'failed',
+                error: 'Network error'
             });
         });
 
@@ -84,6 +102,21 @@ describe('coursesSlice', () => {
         });
     });
 
+    describe('clearCourses action', () => {
+        it('Should clear courses array', () => {
+            const previousState = {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60 },
+                    { id: 2, name: 'Webpack', credit: 20 }
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const state = coursesSlice(previousState, clearCourses());
+            expect(state).toEqual(initialState);
+        });
+    });
+
     describe('logout action', () => {
         it('Should reset courses array on logout', () => {
             const stateWithCourses = {
@@ -91,12 +124,12 @@ describe('coursesSlice', () => {
                     { id: 1, title: 'Introduction to Programming' },
                     { id: 2, title: 'Advanced Mathematics' },
                 ],
+                status: 'succeeded',
+                error: null
             };
             const action = { type: logout.type };
             const state = coursesSlice(stateWithCourses, action);
-            expect(state).toEqual({
-                courses: [],
-            });
+            expect(state).toEqual(initialState);
         });
     });
 });
