@@ -1,4 +1,5 @@
-import { useEffect, useCallback, useReducer } from 'react';
+import { useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import './App.css';
 import Notifications from './components/Notifications/Notifications';
@@ -9,7 +10,9 @@ import CourseList from './pages/CourseList/CourseList';
 import { getLatestNotification } from './utils/utils';
 import BodySectionWithMarginBottom from './components/BodySectionWithMarginBottom/BodySectionWithMarginBottom';
 import BodySection from './components/BodySection/BodySection';
-import { appReducer, APP_ACTIONS, initialState } from './appReducer';
+import { login, logout } from './features/auth/authSlice';
+import { markNotificationAsRead, showDrawer, hideDrawer, fetchNotifications } from './features/notifications/notificationsSlice';
+import { fetchCourses } from './features/courses/coursesSlice';
 
 const API_BASE_URL = 'http://localhost:5173';
 const ENDPOINTS = {
@@ -18,97 +21,66 @@ const ENDPOINTS = {
 };
 
 export default function App() {
-    const [state, dispatch] = useReducer(appReducer, initialState);
+    const dispatch = useDispatch();
+    const { user, isLoggedIn } = useSelector(state => state.auth);
+    const { notifications, displayDrawer } = useSelector(state => state.notifications);
+    const { courses } = useSelector(state => state.courses);
+
     useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                const response = await axios.get(ENDPOINTS.notifications);
-                const latestNotif = {
-                    id: 3,
-                    type: "urgent",
-                    html: { __html: getLatestNotification() }
-                };
-                const currentNotifications = response.data.notifications;
-                const indexToReplace = currentNotifications.findIndex(
-                    notification => notification.id === 3
-                );
-                const updatedNotifications = [...currentNotifications];
-                if (indexToReplace !== -1) {
-                    updatedNotifications[indexToReplace] = latestNotif;
-                } else {
-                    updatedNotifications.push(latestNotif);
-                }
-                dispatch({
-                    type: APP_ACTIONS.SET_NOTIFICATIONS,
-                    payload: updatedNotifications
-                });
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            }
-        };
-        fetchNotifications();
-    }, []);
+        dispatch(fetchNotifications());
+    }, [dispatch]);
+
     useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await axios.get(ENDPOINTS.courses);
-                dispatch({
-                    type: APP_ACTIONS.SET_COURSES,
-                    payload: response.data.courses
-                });
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            }
-        };
-        fetchCourses();
-    }, [state.user.isLoggedIn]);
+        if (isLoggedIn) {
+            dispatch(fetchCourses());
+        }
+    }, [dispatch, isLoggedIn]);
+
     const handleDisplayDrawer = useCallback(() => {
-        dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
-    }, []);
+        dispatch(showDrawer());
+    }, [dispatch]);
+
     const handleHideDrawer = useCallback(() => {
-        dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
-    }, []);
+        dispatch(hideDrawer());
+    }, [dispatch]);
+
     const logIn = (email, password) => {
-        dispatch({
-            type: APP_ACTIONS.LOGIN,
-            payload: { email, password }
-        });
+        dispatch(login({ email, password }));
     };
+
     const logOut = () => {
-        dispatch({ type: APP_ACTIONS.LOGOUT });
+        dispatch(logout());
     };
-    const markNotificationAsRead = useCallback((id) => {
-        dispatch({
-            type: APP_ACTIONS.MARK_NOTIFICATION_READ,
-            payload: id
-        });
-        console.log(`Notification ${id} has been marked as read`);
-    }, []);
+
+    const handleMarkNotificationAsRead = useCallback((id) => {
+        dispatch(markNotificationAsRead(id));
+    }, [dispatch]);
+
     return (
         <>
             <Notifications
-                notifications={state.notifications}
+                notifications={notifications}
                 handleHideDrawer={handleHideDrawer}
                 handleDisplayDrawer={handleDisplayDrawer}
-                displayDrawer={state.displayDrawer}
-                markNotificationAsRead={markNotificationAsRead}
+                displayDrawer={displayDrawer}
+                markNotificationAsRead={handleMarkNotificationAsRead}
             />
             <>
-                <Header user={state.user} logOut={logOut} />
-                {!state.user.isLoggedIn ? (
+                <Header user={user} logOut={logOut} />
+                {!isLoggedIn ? (
                     <BodySectionWithMarginBottom title='Log in to continue'>
                         <Login login={logIn} />
                     </BodySectionWithMarginBottom>
                 ) : (
                     <BodySectionWithMarginBottom title='Course list'>
-                        <CourseList courses={state.courses} />
+                        <CourseList courses={courses} />
                     </BodySectionWithMarginBottom>
                 )}
                 <BodySection title="News from the School">
                     <p>Holberton School news goes here</p>
                 </BodySection>
             </>
-            <Footer user={state.user} />
+            <Footer user={user} />
         </>
     );
 };

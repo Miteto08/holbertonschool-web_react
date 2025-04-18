@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './authReducer';
 import notificationsReducer from './notificationsReducer';
 import coursesReducer from './coursesReducer';
