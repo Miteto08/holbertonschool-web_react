@@ -1,25 +1,25 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { getLatestNotification } from "../../utils/utils";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { getLatestNotification } from '../../utils/utils';
 
 const initialState = {
     notifications: [],
     displayDrawer: true,
 };
 
-const API_BASE_URL = "http://localhost:5173";
+const API_BASE_URL = 'http://localhost:5173';
 const ENDPOINTS = {
     notifications: `${API_BASE_URL}/notifications.json`,
 };
 
 export const fetchNotifications = createAsyncThunk(
-    "notifications/fetchNotifications",
+    'notifications/fetchNotifications',
     async () => {
         const response = await axios.get(ENDPOINTS.notifications);
         const latestNotif = {
             id: 3,
             type: 'urgent',
-            html: { __html: getLatestNotification() }
+            html: { __html: getLatestNotification() },
         };
         const currentNotifications = response.data.notifications;
         const indexToReplace = currentNotifications.findIndex(
@@ -36,7 +36,7 @@ export const fetchNotifications = createAsyncThunk(
 );
 
 const notificationsSlice = createSlice({
-    name: "notifications",
+    name: 'notifications',
     initialState,
     reducers: {
         markNotificationAsRead: (state, action) => {

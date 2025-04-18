@@ -1,13 +1,13 @@
 import { memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { markNotificationAsRead, showDrawer, hideDrawer } from '../../features/notifications/notificationsSlice';
+import NotificationItem from '../NotificationItem/NotificationItem';
 import './Notifications.css';
 import closeIcon from '../../assets/close-icon.png';
-import NotificationItem from '../NotificationItem/NotificationItem';
 
 const Notifications = memo(function Notifications() {
     const dispatch = useDispatch();
-    const { displayDrawer, notifications } = useSelector((state) => state.notifications);
+    const { notifications, displayDrawer } = useSelector((state) => state.notifications);
 
     const handleDisplayDrawer = () => {
         dispatch(showDrawer());
@@ -35,7 +35,7 @@ const Notifications = memo(function Notifications() {
                                 <img src={closeIcon} alt="close icon" />
                             </button>
                             <ul>
-                                {notifications.map(notification => (
+                                {notifications.map((notification) => (
                                     <NotificationItem
                                         key={notification.id}
                                         id={notification.id}

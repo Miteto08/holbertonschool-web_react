@@ -61,7 +61,7 @@ describe('coursesSlice', () => {
             );
         });
 
-        it('Should test courses', async () => {
+        it('Test courses', async () => {
             mock.onGet('http://localhost:5173/courses.json').reply(200, {
                 "courses": [
                     { "id": 1, "name": "ES6", "credit": 60 },

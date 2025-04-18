@@ -1,7 +1,7 @@
+import { useDispatch } from 'react-redux';
 import WithLogging from '../../components/HOC/WithLogging';
 import useLogin from '../../hooks/useLogin';
 import './Login.css';
-import { useDispatch } from 'react-redux';
 import { login } from '../../features/auth/authSlice';
 
 function Login() {
