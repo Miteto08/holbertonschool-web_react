@@ -4,7 +4,11 @@ import CourseListRow from './CourseListRow';
 describe('CourseListRow', () => {
     it('Should render a header row with one cell', () => {
         render(
-            <CourseListRow isHeader={true} textFirstCell="Available courses" />
+            <table>
+                <thead>
+                    <CourseListRow isHeader={true} textFirstCell="Available courses" />
+                </thead>
+            </table>
         );
         const headerCell = screen.getByRole('columnheader', { name: 'Available courses' });
         expect(headerCell).toHaveAttribute('colSpan', '2');
@@ -12,11 +16,15 @@ describe('CourseListRow', () => {
 
     it('Should render a header row with two cells', () => {
         render(
-            <CourseListRow
-                isHeader={true}
-                textFirstCell="Course name"
-                textSecondCell="Credit"
-            />
+            <table>
+                <thead>
+                    <CourseListRow
+                        isHeader={true}
+                        textFirstCell="Course name"
+                        textSecondCell="Credit"
+                    />
+                </thead>
+            </table>
         );
         const headerCell1 = screen.getByRole('columnheader', { name: 'Course name' });
         const headerCell2 = screen.getByRole('columnheader', { name: 'Credit' });
@@ -26,11 +34,15 @@ describe('CourseListRow', () => {
 
     it('Should render a regular row', () => {
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                    />
+                </tbody>
+            </table>
         );
         const cell1 = screen.getByRole('cell', { name: 'ES6' });
         const cell2 = screen.getByRole('cell', { name: '60' });
@@ -40,23 +52,31 @@ describe('CourseListRow', () => {
 
     it('Should not render checkbox if id is null', () => {
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                    />
+                </tbody>
+            </table>
         );
         expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
     });
 
     it('Should render checkbox if id is provided', () => {
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-                id={1}
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                        id={1}
+                    />
+                </tbody>
+            </table>
         );
         expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
@@ -64,14 +84,18 @@ describe('CourseListRow', () => {
     it('Should call onChangeRow when checkbox is checked', () => {
         const mockOnChangeRow = jest.fn();
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-                id={1}
-                onChangeRow={mockOnChangeRow}
-                isSelected={false}
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                        id={1}
+                        onChangeRow={mockOnChangeRow}
+                        isSelected={false}
+                    />
+                </tbody>
+            </table>
         );
 
         const checkbox = screen.getByRole('checkbox');
@@ -82,14 +106,18 @@ describe('CourseListRow', () => {
     it('Should call onChangeRow when checkbox is unchecked', () => {
         const mockOnChangeRow = jest.fn();
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-                id={1}
-                onChangeRow={mockOnChangeRow}
-                isSelected={true}
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                        id={1}
+                        onChangeRow={mockOnChangeRow}
+                        isSelected={true}
+                    />
+                </tbody>
+            </table>
         );
 
         const checkbox = screen.getByRole('checkbox');
@@ -100,13 +128,17 @@ describe('CourseListRow', () => {
 
     it('Should render checkbox with correct checked state', () => {
         render(
-            <CourseListRow
-                isHeader={false}
-                textFirstCell="ES6"
-                textSecondCell="60"
-                id={1}
-                isSelected={true}
-            />
+            <table>
+                <tbody>
+                    <CourseListRow
+                        isHeader={false}
+                        textFirstCell="ES6"
+                        textSecondCell="60"
+                        id={1}
+                        isSelected={true}
+                    />
+                </tbody>
+            </table>
         );
 
         const checkbox = screen.getByRole('checkbox');

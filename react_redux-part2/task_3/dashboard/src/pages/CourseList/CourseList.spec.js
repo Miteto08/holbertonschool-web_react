@@ -137,31 +137,29 @@ describe('CourseList', () => {
                 },
             },
         });
-        render(
-            <Provider store={store}>
-                <CourseList />
-            </Provider>
-        );
+
+        expect(store.getState().courses.courses).toHaveLength(3);
+
         store.dispatch(logout());
+
         expect(store.getState().courses.courses).toHaveLength(0);
     });
 
-    it('Should load courses on login', () => {
+    it('Should initialize empty courses on login', () => {
         store = configureStore({
             reducer: {
                 courses: coursesSlice,
                 auth: authSlice,
             },
         });
-        render(
-            <Provider store={store}>
-                <CourseList />
-            </Provider>
-        );
+
+        expect(store.getState().courses.courses).toHaveLength(0);
+
         store.dispatch(login({
             email: 'test@example.com',
             password: 'password123'
         }));
+
         expect(store.getState().courses.courses).toHaveLength(0);
     });
 });

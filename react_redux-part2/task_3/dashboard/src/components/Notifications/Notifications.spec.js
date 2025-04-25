@@ -1,10 +1,15 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Notifications from './Notifications';
+import * as notificationSelector from '../../features/selectors/notificationSelector';
 
 jest.mock('react-redux', () => ({
     ...jest.requireActual('react-redux'),
     useDispatch: jest.fn().mockReturnValue(jest.fn()),
     useSelector: jest.fn()
+}));
+
+jest.mock('../../features/selectors/notificationSelector', () => ({
+    getFilteredNotifications: jest.fn()
 }));
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -23,6 +28,8 @@ describe('Notifications', () => {
             };
             return selector(state);
         });
+
+        notificationSelector.getFilteredNotifications.mockReturnValue([]);
     });
 
     it('Should render without crashing', () => {
@@ -78,14 +85,17 @@ describe('Notifications', () => {
     });
 
     it('Should close drawer on close button', () => {
+        const mockNotifications = [
+            { id: 1, type: "default", value: "New course available" },
+            { id: 2, type: "urgent", value: "New resume available" }
+        ];
+
+        notificationSelector.getFilteredNotifications.mockReturnValue(mockNotifications);
+
         useSelector.mockImplementation(selector => {
             const state = {
                 notifications: {
-                    notifications: [
-                        { id: 1, type: "default", value: "New course available" },
-                        { id: 2, type: "urgent", value: "New resume available" },
-                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
+                    notifications: mockNotifications,
                     loading: false,
                     error: null
                 }
@@ -107,14 +117,44 @@ describe('Notifications', () => {
         const mockDispatch = jest.fn();
         useDispatch.mockReturnValue(mockDispatch);
 
+        const mockNotifications = [
+            { id: 1, type: "default", value: "New course available" },
+            { id: 2, type: "urgent", value: "New resume available" }
+        ];
+
+        notificationSelector.getFilteredNotifications.mockReturnValue(mockNotifications);
+
         useSelector.mockImplementation(selector => {
             const state = {
                 notifications: {
-                    notifications: [
-                        { id: 1, type: "default", value: "New course available" },
-                        { id: 2, type: "urgent", value: "New resume available" },
-                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
+                    notifications: mockNotifications,
+                    loading: false,
+                    error: null
+                }
+            };
+            return selector(state);
+        });
+
+        render(<Notifications />);
+
+        fireEvent.click(screen.getByText(/your notifications/i));
+        fireEvent.click(screen.getByText('New course available'));
+
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('Should filter notifications when filter buttons are clicked', () => {
+        const mockNotifications = [
+            { id: 1, type: "default", value: "New course available" },
+            { id: 2, type: "urgent", value: "New resume available" }
+        ];
+
+        notificationSelector.getFilteredNotifications.mockReturnValue(mockNotifications);
+
+        useSelector.mockImplementation(selector => {
+            const state = {
+                notifications: {
+                    notifications: mockNotifications,
                     loading: false,
                     error: null
                 }
@@ -126,8 +166,16 @@ describe('Notifications', () => {
 
         fireEvent.click(screen.getByText(/your notifications/i));
 
-        fireEvent.click(screen.getByText('New course available'));
+        expect(screen.getByText('‼️')).toBeInTheDocument();
+        expect(screen.getByText('??')).toBeInTheDocument();
 
-        expect(mockDispatch).toHaveBeenCalled();
+        fireEvent.click(screen.getByText('‼️'));
+        expect(notificationSelector.getFilteredNotifications).toHaveBeenCalled();
+
+        fireEvent.click(screen.getByText('??'));
+        expect(notificationSelector.getFilteredNotifications).toHaveBeenCalled();
+
+        fireEvent.click(screen.getByText('All'));
+        expect(notificationSelector.getFilteredNotifications).toHaveBeenCalled();
     });
 });

@@ -3,6 +3,7 @@ import NotificationItem from './NotificationItem';
 
 describe('NotificationItem', () => {
     const markAsRead = jest.fn();
+
     it('Should render a default notification', () => {
         render(
             <NotificationItem
@@ -18,23 +19,7 @@ describe('NotificationItem', () => {
         expect(listItem).toHaveStyle('color: blue');
     });
 
-    it('Should render an urgent notification with HTML', () => {
-        const html = { __html: '<u>Urgent requirement</u>' };
-        render(
-            <NotificationItem
-                type="urgent"
-                html={html}
-                markAsRead={markAsRead}
-                id={2}
-            />
-        );
-        const listItem = screen.getByRole('listitem');
-        expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
-        expect(listItem).toHaveStyle('color: red');
-        expect(listItem).toContainHTML('<u>Urgent requirement</u>');
-    });
-
-    it('Should render an urgent notification without HTML', () => {
+    it('Should render an urgent notification', () => {
         render(
             <NotificationItem
                 type="urgent"
@@ -60,6 +45,6 @@ describe('NotificationItem', () => {
         );
         const listItem = screen.getByRole('listitem');
         fireEvent.click(listItem);
-        expect(markAsRead).toHaveBeenCalledTimes(1);
+        expect(markAsRead).toHaveBeenCalledWith(1);
     });
 });

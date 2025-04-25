@@ -24,17 +24,19 @@ li[data-priority="urgent"] {
   margin: 0;
 }
 
-.Notifications button {
+.Notifications .close-button {
   position: absolute;
   cursor: pointer;
-  right: calc(0% - 480px);
-  top: calc(0% - 480px);
+  right: 5px;
+  top: 5px;
   background: transparent;
-  transform: scale(0.012);
-  -webkit-transform: scale(0.012);
-  -moz-transform: scale(0.012);
-  -ms-transform: scale(0.012);
-  -o-transform: scale(0.012);
+  border: none;
+  padding: 0;
+}
+
+.Notifications .close-button img {
+  width: 10px;
+  height: 10px;
 }
 
 .notification-title {
@@ -42,6 +44,7 @@ li[data-priority="urgent"] {
   position: absolute;
   right: 10px;
   top: 2px;
+  cursor: pointer;
 }
 
 .Notifications:not(.visible) {
@@ -62,4 +65,30 @@ li[data-priority="urgent"] {
   font-weight: bold;
   padding: 10px;
   text-align: center;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  gap: 5px;
+}
+
+.filter-buttons button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.filter-buttons button:hover {
+  background-color: #e9e9e9;
+}
+
+.filter-buttons button.active {
+  background-color: #e1003c;
+  color: white;
+  border-color: #e1003c;
 }
