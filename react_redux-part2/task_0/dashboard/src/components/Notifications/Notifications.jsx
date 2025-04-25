@@ -6,6 +6,8 @@ import './Notifications.css';
 import closeIcon from '../../assets/close-icon.png';
 
 const Notifications = memo(function Notifications() {
+    console.log("Rendering Notifications component");
+
     const dispatch = useDispatch();
     const notifications = useSelector((state) => state.notifications.notifications);
 
