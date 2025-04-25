@@ -4,17 +4,14 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
 
-// Mock Redux
 jest.mock('react-redux', () => ({
     ...jest.requireActual('react-redux'),
     useDispatch: jest.fn().mockReturnValue(jest.fn()),
     useSelector: jest.fn()
 }));
 
-// Import après le mock
 import { useSelector, useDispatch } from 'react-redux';
 
-// Mock Axios
 jest.mock('axios');
 
 describe('App Component Integration Tests', () => {
@@ -26,7 +23,6 @@ describe('App Component Integration Tests', () => {
         mockDispatch = jest.fn();
         useDispatch.mockReturnValue(mockDispatch);
 
-        // Par défaut, simuler un utilisateur non connecté
         useSelector.mockImplementation((selector) => {
             const state = {
                 auth: {
@@ -47,7 +43,6 @@ describe('App Component Integration Tests', () => {
             return selector(state);
         });
 
-        // Setup Axios mock
         axiosMock = new MockAdapter(axios);
         axiosMock
             .onGet('http://localhost:5173/courses.json')
@@ -76,18 +71,14 @@ describe('App Component Integration Tests', () => {
     it('Should not populate courses when not logged in', async () => {
         render(<App />);
 
-        // Vérifier que fetchNotifications a été appelé mais pas fetchCourses
         await waitFor(() => {
-            // Vérifier que le dispatch a été appelé au moins une fois (pour fetchNotifications)
             expect(mockDispatch).toHaveBeenCalled();
 
-            // Vérifier que la page de login est affichée
             expect(screen.getByText('Login to access the full dashboard')).toBeInTheDocument();
         });
     });
 
     it('Should populate courses WHEN logged in', async () => {
-        // Simuler un utilisateur connecté
         useSelector.mockImplementation((selector) => {
             const state = {
                 auth: {
@@ -119,7 +110,6 @@ describe('App Component Integration Tests', () => {
         render(<App />);
 
         await waitFor(() => {
-            // Vérifier que la liste des cours est affichée
             expect(screen.getByText('Available courses')).toBeInTheDocument();
             expect(screen.getByText('ES6')).toBeInTheDocument();
             expect(screen.getByText('Webpack')).toBeInTheDocument();
@@ -128,7 +118,6 @@ describe('App Component Integration Tests', () => {
     });
 
     it('Should CLEAR courses on logout', async () => {
-        // Simuler d'abord un utilisateur connecté
         useSelector.mockImplementation((selector) => {
             const state = {
                 auth: {
@@ -159,10 +148,8 @@ describe('App Component Integration Tests', () => {
 
         const { rerender } = render(<App />);
 
-        // Vérifier que la liste des cours est affichée
         expect(screen.getByText('Available courses')).toBeInTheDocument();
 
-        // Simuler une déconnexion
         useSelector.mockImplementation((selector) => {
             const state = {
                 auth: {
@@ -183,10 +170,8 @@ describe('App Component Integration Tests', () => {
             return selector(state);
         });
 
-        // Re-rendre pour refléter le changement d'état
         rerender(<App />);
 
-        // Vérifier que la page de login est affichée à nouveau
         expect(screen.getByText('Login to access the full dashboard')).toBeInTheDocument();
     });
 });

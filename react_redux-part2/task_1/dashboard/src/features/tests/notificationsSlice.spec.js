@@ -111,7 +111,6 @@ describe('notificationsSlice', () => {
                 })
             );
 
-            // Test the reducer with the fulfilled action
             const state = notificationsSlice(initialState, fulfilledAction);
             expect(state).toEqual({
                 ...initialState,

@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import Notifications from './Notifications';
 
-// Mock Redux
 jest.mock('react-redux', () => ({
     ...jest.requireActual('react-redux'),
     useDispatch: jest.fn().mockReturnValue(jest.fn()),
@@ -14,10 +13,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 describe('Notifications', () => {
     beforeEach(() => {
-        // Reset les mocks
         jest.clearAllMocks();
 
-        // Mock pour un état vide par défaut
         useSelector.mockImplementation(selector => {
             const state = {
                 notifications: {
@@ -72,15 +69,12 @@ describe('Notifications', () => {
     it('Should toggle drawer on click', () => {
         render(<Notifications />);
 
-        // Initialement, le drawer ne devrait pas être visible
         const drawer = screen.getByText(/no new notifications for now/i).closest('.Notifications');
         expect(drawer).not.toHaveClass('visible');
 
-        // Cliquer pour l'ouvrir
         fireEvent.click(screen.getByText(/your notifications/i));
         expect(drawer).toHaveClass('visible');
 
-        // Cliquer pour le fermer
         fireEvent.click(screen.getByText(/your notifications/i));
         expect(drawer).not.toHaveClass('visible');
     });
@@ -103,12 +97,10 @@ describe('Notifications', () => {
 
         const { container } = render(<Notifications />);
 
-        // Ouvrir le drawer d'abord
         fireEvent.click(screen.getByText(/your notifications/i));
         const drawer = container.querySelector('.Notifications');
         expect(drawer).toHaveClass('visible');
 
-        // Puis le fermer avec le bouton de fermeture
         fireEvent.click(screen.getByRole('button', { name: /close/i }));
         expect(drawer).not.toHaveClass('visible');
     });
@@ -134,13 +126,10 @@ describe('Notifications', () => {
 
         render(<Notifications />);
 
-        // Ouvrir le drawer pour voir les notifications
         fireEvent.click(screen.getByText(/your notifications/i));
 
-        // Cliquer sur une notification
         fireEvent.click(screen.getByText('New course available'));
 
-        // Vérifier que l'action a été dispatched
         expect(mockDispatch).toHaveBeenCalled();
     });
 });

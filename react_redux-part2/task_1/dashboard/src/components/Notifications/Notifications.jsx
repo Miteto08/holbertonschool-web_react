@@ -16,7 +16,6 @@ const Notifications = memo(function Notifications() {
     const [displayDrawer, setDisplayDrawer] = useState(false);
 
     useEffect(() => {
-        // Charger les notifications si ce n'est pas déjà fait
         if (!loading && notifications.length === 0 && !error) {
             dispatch(fetchNotifications());
         }
