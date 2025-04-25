@@ -10,6 +10,8 @@ const mock = new MockAdapter(axios);
 describe('notificationsSlice', () => {
     const initialState = {
         notifications: [],
+        loading: false,
+        error: null
     };
 
     it('Should return the initial state', () => {
@@ -42,16 +44,22 @@ describe('notificationsSlice', () => {
             const state = notificationsSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
+                loading: true,
+                error: null
             });
         });
 
         it('Should handle fetchNotifications.rejected', () => {
+            const errorMessage = 'Network Error';
             const action = {
                 type: fetchNotifications.rejected.type,
+                error: { message: errorMessage }
             };
             const state = notificationsSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
+                loading: false,
+                error: errorMessage
             });
         });
 
@@ -102,6 +110,14 @@ describe('notificationsSlice', () => {
                     payload: notificationsResponse.data.notifications,
                 })
             );
+
+            // Test the reducer with the fulfilled action
+            const state = notificationsSlice(initialState, fulfilledAction);
+            expect(state).toEqual({
+                ...initialState,
+                loading: false,
+                notifications: notificationsResponse.data.notifications
+            });
         });
     });
 });

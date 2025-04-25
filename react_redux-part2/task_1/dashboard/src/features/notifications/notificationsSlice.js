@@ -3,7 +3,9 @@ import axios from 'axios';
 import { getLatestNotification } from '../../utils/utils';
 
 const initialState = {
-    notifications: []
+    notifications: [],
+    loading: false,
+    error: null
 };
 
 const API_BASE_URL = 'http://localhost:5173';
@@ -47,9 +49,19 @@ const notificationsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchNotifications.fulfilled, (state, action) => {
-            state.notifications = action.payload;
-        });
+        builder
+            .addCase(fetchNotifications.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchNotifications.fulfilled, (state, action) => {
+                state.loading = false;
+                state.notifications = action.payload;
+            })
+            .addCase(fetchNotifications.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            });
     },
 });
 

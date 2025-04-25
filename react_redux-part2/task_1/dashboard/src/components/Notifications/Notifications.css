@@ -49,3 +49,17 @@ li[data-priority="urgent"] {
   visibility: hidden;
   transform: translateY(-20px);
 }
+
+.Notifications .loading {
+  font-style: italic;
+  color: #666;
+  padding: 10px;
+  text-align: center;
+}
+
+.Notifications .error {
+  color: #e1003c;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}

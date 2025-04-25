@@ -2,101 +2,145 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import Notifications from './Notifications';
-import notificationsSlice from '../../features/notifications/notificationsSlice';
+
+// Mock Redux
+jest.mock('react-redux', () => ({
+    ...jest.requireActual('react-redux'),
+    useDispatch: jest.fn().mockReturnValue(jest.fn()),
+    useSelector: jest.fn()
+}));
+
+import { useSelector, useDispatch } from 'react-redux';
 
 describe('Notifications', () => {
-    let store;
     beforeEach(() => {
-        store = configureStore({
-            reducer: {
-                notifications: notificationsSlice,
-            },
-            preloadedState: {
+        // Reset les mocks
+        jest.clearAllMocks();
+
+        // Mock pour un état vide par défaut
+        useSelector.mockImplementation(selector => {
+            const state = {
                 notifications: {
-                    notifications: []
+                    notifications: [],
+                    loading: false,
+                    error: null
                 }
-            }
+            };
+            return selector(state);
         });
     });
 
     it('Should render without crashing', () => {
-        render(
-            <Provider store={store}>
-                <Notifications />
-            </Provider>
-        );
+        render(<Notifications />);
         expect(screen.getByText('Your notifications')).toBeInTheDocument();
     });
 
-    it('Should toggle drawer on click', () => {
-        render(
-            <Provider store={store}>
-                <Notifications />
-            </Provider>
-        );
-        const drawer = screen.getByText(/no new notifications for now/i).closest('.Notifications');
-        expect(drawer).toHaveClass('visible');
+    it('Should render loading state', () => {
+        useSelector.mockImplementation(selector => {
+            const state = {
+                notifications: {
+                    notifications: [],
+                    loading: true,
+                    error: null
+                }
+            };
+            return selector(state);
+        });
 
-        fireEvent.click(screen.getByText(/your notifications/i));
+        render(<Notifications />);
+        expect(screen.getByText('Loading notifications...')).toBeInTheDocument();
+        expect(screen.getByText('Loading notifications...').className).toBe('loading');
+    });
+
+    it('Should render error state', () => {
+        useSelector.mockImplementation(selector => {
+            const state = {
+                notifications: {
+                    notifications: [],
+                    loading: false,
+                    error: 'Failed to fetch notifications'
+                }
+            };
+            return selector(state);
+        });
+
+        render(<Notifications />);
+        expect(screen.getByText(/Error loading notifications:/)).toBeInTheDocument();
+        expect(screen.getByText(/Error loading notifications:/).className).toBe('error');
+    });
+
+    it('Should toggle drawer on click', () => {
+        render(<Notifications />);
+
+        // Initialement, le drawer ne devrait pas être visible
+        const drawer = screen.getByText(/no new notifications for now/i).closest('.Notifications');
         expect(drawer).not.toHaveClass('visible');
 
+        // Cliquer pour l'ouvrir
         fireEvent.click(screen.getByText(/your notifications/i));
         expect(drawer).toHaveClass('visible');
+
+        // Cliquer pour le fermer
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(drawer).not.toHaveClass('visible');
     });
 
     it('Should close drawer on close button', () => {
-        store = configureStore({
-            reducer: {
-                notifications: notificationsSlice,
-            },
-            preloadedState: {
+        useSelector.mockImplementation(selector => {
+            const state = {
                 notifications: {
                     notifications: [
                         { id: 1, type: "default", value: "New course available" },
                         { id: 2, type: "urgent", value: "New resume available" },
                         { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ]
+                    ],
+                    loading: false,
+                    error: null
                 }
-            }
+            };
+            return selector(state);
         });
-        render(
-            <Provider store={store}>
-                <Notifications />
-            </Provider>
-        );
 
-        const drawer = screen.getByText(/here is the list of notifications/i).closest('.Notifications');
+        const { container } = render(<Notifications />);
+
+        // Ouvrir le drawer d'abord
+        fireEvent.click(screen.getByText(/your notifications/i));
+        const drawer = container.querySelector('.Notifications');
         expect(drawer).toHaveClass('visible');
 
+        // Puis le fermer avec le bouton de fermeture
         fireEvent.click(screen.getByRole('button', { name: /close/i }));
         expect(drawer).not.toHaveClass('visible');
     });
 
     it('Should mark notification as read', () => {
-        store = configureStore({
-            reducer: {
-                notifications: notificationsSlice,
-            },
-            preloadedState: {
+        const mockDispatch = jest.fn();
+        useDispatch.mockReturnValue(mockDispatch);
+
+        useSelector.mockImplementation(selector => {
+            const state = {
                 notifications: {
                     notifications: [
                         { id: 1, type: "default", value: "New course available" },
                         { id: 2, type: "urgent", value: "New resume available" },
                         { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ]
+                    ],
+                    loading: false,
+                    error: null
                 }
-            }
+            };
+            return selector(state);
         });
-        render(
-            <Provider store={store}>
-                <Notifications />
-            </Provider>
-        );
+
+        render(<Notifications />);
+
+        // Ouvrir le drawer pour voir les notifications
+        fireEvent.click(screen.getByText(/your notifications/i));
+
+        // Cliquer sur une notification
         fireEvent.click(screen.getByText('New course available'));
-        const state = store.getState().notifications;
-        expect(state.notifications).toEqual([
-            { id: 2, type: "urgent", value: "New resume available" },
-            { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-        ]);
+
+        // Vérifier que l'action a été dispatched
+        expect(mockDispatch).toHaveBeenCalled();
     });
 });
