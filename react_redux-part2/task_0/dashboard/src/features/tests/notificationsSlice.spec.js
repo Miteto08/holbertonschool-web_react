@@ -1,7 +1,5 @@
 import notificationsSlice, {
     markNotificationAsRead,
-    showDrawer,
-    hideDrawer,
     fetchNotifications,
 } from '../notifications/notificationsSlice';
 import axios from 'axios';
@@ -12,7 +10,6 @@ const mock = new MockAdapter(axios);
 describe('notificationsSlice', () => {
     const initialState = {
         notifications: [],
-        displayDrawer: true,
     };
 
     it('Should return the initial state', () => {
@@ -36,26 +33,6 @@ describe('notificationsSlice', () => {
         };
         expect(notificationsSlice(stateWithNotifications, action)).toEqual(
             expectedState
-        );
-    });
-
-    it('Should handle showDrawer', () => {
-        const action = showDrawer();
-        const expectedState = {
-            ...initialState,
-            displayDrawer: true,
-        };
-        expect(notificationsSlice(initialState, action)).toEqual(expectedState);
-    });
-
-    it('Should handle hideDrawer', () => {
-        const stateWithDrawerClosed = {
-            ...initialState,
-            displayDrawer: false,
-        };
-        const action = hideDrawer();
-        expect(notificationsSlice(initialState, action)).toEqual(
-            stateWithDrawerClosed
         );
     });
 

@@ -11,6 +11,11 @@ describe('Notifications', () => {
             reducer: {
                 notifications: notificationsSlice,
             },
+            preloadedState: {
+                notifications: {
+                    notifications: []
+                }
+            }
         });
     });
 
@@ -29,9 +34,14 @@ describe('Notifications', () => {
                 <Notifications />
             </Provider>
         );
+        const drawer = screen.getByText(/no new notifications for now/i).closest('.Notifications');
+        expect(drawer).toHaveClass('visible');
+
         fireEvent.click(screen.getByText(/your notifications/i));
-        const state = store.getState().notifications;
-        expect(state.displayDrawer).toBe(true);
+        expect(drawer).not.toHaveClass('visible');
+
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(drawer).toHaveClass('visible');
     });
 
     it('Should close drawer on close button', () => {
@@ -42,25 +52,27 @@ describe('Notifications', () => {
             preloadedState: {
                 notifications: {
                     notifications: [
-                        { "id": 1, "type": "default", "value": "New course available" },
-                        { "id": 2, "type": "urgent", "value": "New resume available" },
-                        { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
-                    displayDrawer: true,
-                },
-            },
+                        { id: 1, type: "default", value: "New course available" },
+                        { id: 2, type: "urgent", value: "New resume available" },
+                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+                    ]
+                }
+            }
         });
         render(
             <Provider store={store}>
                 <Notifications />
             </Provider>
         );
-        fireEvent.click(screen.getByAltText(/close icon/i));
-        const state = store.getState().notifications;
-        expect(state.displayDrawer).toBe(false);
+
+        const drawer = screen.getByText(/here is the list of notifications/i).closest('.Notifications');
+        expect(drawer).toHaveClass('visible');
+
+        fireEvent.click(screen.getByRole('button', { name: /close/i }));
+        expect(drawer).not.toHaveClass('visible');
     });
 
-    it('Should marks notification as read', () => {
+    it('Should mark notification as read', () => {
         store = configureStore({
             reducer: {
                 notifications: notificationsSlice,
@@ -68,13 +80,12 @@ describe('Notifications', () => {
             preloadedState: {
                 notifications: {
                     notifications: [
-                        { "id": 1, "type": "default", "value": "New course available" },
-                        { "id": 2, "type": "urgent", "value": "New resume available" },
-                        { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
-                    displayDrawer: true,
-                },
-            },
+                        { id: 1, type: "default", value: "New course available" },
+                        { id: 2, type: "urgent", value: "New resume available" },
+                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+                    ]
+                }
+            }
         });
         render(
             <Provider store={store}>
@@ -84,8 +95,8 @@ describe('Notifications', () => {
         fireEvent.click(screen.getByText('New course available'));
         const state = store.getState().notifications;
         expect(state.notifications).toEqual([
-            { "id": 2, "type": "urgent", "value": "New resume available" },
-            { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+            { id: 2, type: "urgent", value: "New resume available" },
+            { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
         ]);
     });
 });
