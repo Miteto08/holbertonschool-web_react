@@ -9,11 +9,11 @@ describe('authSlice', () => {
         isLoggedIn: false,
     };
 
-    it('should return the initial state', () => {
+    test('should return the initial state', () => {
         expect(authReducer(undefined, { type: 'unknown' })).toEqual(initialState);
     });
 
-    it('should handle login', () => {
+    test('should handle login', () => {
         const user = { email: 'test@example.com', password: 'password123' };
         const action = login(user);
         const expectedState = {
@@ -23,7 +23,7 @@ describe('authSlice', () => {
         expect(authReducer(initialState, action)).toEqual(expectedState);
     });
 
-    it('should handle logout', () => {
+    test('should handle logout', () => {
         const loggedInState = {
             user: { email: 'test@example.com', password: 'password123' },
             isLoggedIn: true,

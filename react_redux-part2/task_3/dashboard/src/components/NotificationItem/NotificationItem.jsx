@@ -6,15 +6,11 @@ const NotificationItem = memo(function NotificationItem({
     markAsRead,
     id
 }) {
-    console.log(`Rendering NotificationItem with id: ${id}, type: ${type}, value: ${value}`);
-
-    const color = type === 'urgent' ? 'red' : 'blue';
-
     return (
         <li
-            style={{ color }}
             data-notification-type={type}
             onClick={() => markAsRead(id)}
+            style={{ color: type === 'urgent' ? 'red' : 'blue' }}
         >
             {value}
         </li>

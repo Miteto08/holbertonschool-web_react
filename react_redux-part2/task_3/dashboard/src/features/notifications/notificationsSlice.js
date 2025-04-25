@@ -4,7 +4,6 @@ import axios from 'axios';
 const initialState = {
     notifications: [],
     loading: false,
-    error: null
 };
 
 const API_BASE_URL = 'http://localhost:5173';
@@ -17,26 +16,16 @@ export const fetchNotifications = createAsyncThunk(
     async () => {
         const response = await axios.get(ENDPOINTS.notifications);
 
-        const data = response.data.notifications || response.data;
-
-        const unreadNotifications = data
-            .filter(notification => notification.context ? !notification.context.isRead : true)
-            .map(notification => {
-                if (notification.context) {
-                    return {
-                        id: notification.id,
-                        type: notification.context.type,
-                        value: notification.context.value,
-                        isRead: notification.context.isRead
-                    };
-                }
-                return notification;
-            });
-
-        return unreadNotifications;
+        return response.data
+            .filter(notification => notification.context.isRead === false)
+            .map(notification => ({
+                id: notification.id,
+                type: notification.context.type,
+                isRead: notification.context.isRead,
+                value: notification.context.value
+            }));
     }
 );
-
 const notificationsSlice = createSlice({
     name: 'notifications',
     initialState,
@@ -49,19 +38,18 @@ const notificationsSlice = createSlice({
             console.log(`Notification ${notificationId} has been marked as read`);
         },
     },
+
     extraReducers: (builder) => {
         builder
             .addCase(fetchNotifications.pending, (state) => {
                 state.loading = true;
-                state.error = null;
             })
             .addCase(fetchNotifications.fulfilled, (state, action) => {
-                state.loading = false;
                 state.notifications = action.payload;
-            })
-            .addCase(fetchNotifications.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message;
+            })
+            .addCase(fetchNotifications.rejected, (state) => {
+                state.loading = false;
             });
     },
 });

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchNotifications } from './features/notifications/notificationsSlice';
-import { fetchCourses, clearCourses } from './features/courses/coursesSlice';
+import { fetchCourses } from './features/courses/coursesSlice';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Login from './pages/Login/Login';
@@ -21,8 +21,6 @@ export default function App() {
     useEffect(() => {
         if (isLoggedIn) {
             dispatch(fetchCourses());
-        } else {
-            dispatch(clearCourses());
         }
     }, [dispatch, isLoggedIn]);
 

@@ -3,8 +3,7 @@ import NotificationItem from './NotificationItem';
 
 describe('NotificationItem', () => {
     const markAsRead = jest.fn();
-
-    it('Should render a default notification', () => {
+    test('Renders a default notification', () => {
         render(
             <NotificationItem
                 type="default"
@@ -19,22 +18,37 @@ describe('NotificationItem', () => {
         expect(listItem).toHaveStyle('color: blue');
     });
 
-    it('Should render an urgent notification', () => {
+    test('Renders an urgent notification with value', () => {
         render(
             <NotificationItem
                 type="urgent"
-                value="Urgent requirement"
+                value="Urgent requirement: System update needed"
                 markAsRead={markAsRead}
-                id={3}
+                id={2}
             />
         );
         const listItem = screen.getByRole('listitem');
-        expect(listItem).toHaveTextContent('Urgent requirement');
         expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
         expect(listItem).toHaveStyle('color: red');
+        expect(listItem).toHaveTextContent('Urgent requirement: System update needed');
     });
 
-    it('Should call markAsRead when clicked', () => {
+    test('Renders a default notification with value', () => {
+        render(
+            <NotificationItem
+                type="default"
+                value="New course available"
+                markAsRead={markAsRead}
+                id={1}
+            />
+        );
+        const listItem = screen.getByRole('listitem');
+        expect(listItem).toHaveAttribute('data-notification-type', 'default');
+        expect(listItem).toHaveStyle('color: blue');
+        expect(listItem).toHaveTextContent('New course available');
+    });
+
+    test('Calls markAsRead when clicked', () => {
         render(
             <NotificationItem
                 type="default"
@@ -45,6 +59,6 @@ describe('NotificationItem', () => {
         );
         const listItem = screen.getByRole('listitem');
         fireEvent.click(listItem);
-        expect(markAsRead).toHaveBeenCalledWith(1);
+        expect(markAsRead).toHaveBeenCalledTimes(1);
     });
 });

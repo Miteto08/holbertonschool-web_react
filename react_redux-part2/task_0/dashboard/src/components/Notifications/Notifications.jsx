@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
 import NotificationItem from '../NotificationItem/NotificationItem';
@@ -6,15 +6,15 @@ import './Notifications.css';
 import closeIcon from '../../assets/close-icon.png';
 
 const Notifications = memo(function Notifications() {
-    console.log("Rendering Notifications component");
-
     const dispatch = useDispatch();
     const notifications = useSelector((state) => state.notifications.notifications);
 
-    const displayDrawer = useRef(null);
+    console.log('Get re render once again!')
+
+    const DrawerRef = useRef(null);
 
     const handleToggleDrawer = useCallback(() => {
-        displayDrawer.current.classList.toggle('visible');
+        DrawerRef.current.classList.toggle('visible');
     }, []);
 
     const handleMarkNotificationAsRead = useCallback((id) => {
@@ -26,7 +26,7 @@ const Notifications = memo(function Notifications() {
             <div className="notification-title" onClick={handleToggleDrawer}>
                 Your notifications
             </div>
-            <div className="Notifications visible" ref={displayDrawer}>
+            <div className="Notifications visible" ref={DrawerRef} >
                 {notifications.length > 0 ? (
                     <>
                         <p>Here is the list of notifications</p>

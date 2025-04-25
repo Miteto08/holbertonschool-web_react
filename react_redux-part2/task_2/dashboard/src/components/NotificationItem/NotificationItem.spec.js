@@ -3,7 +3,7 @@ import NotificationItem from './NotificationItem';
 
 describe('NotificationItem', () => {
     const markAsRead = jest.fn();
-    it('Should render a default notification', () => {
+    test('Renders a default notification', () => {
         render(
             <NotificationItem
                 type="default"
@@ -18,7 +18,7 @@ describe('NotificationItem', () => {
         expect(listItem).toHaveStyle('color: blue');
     });
 
-    it('Should render an urgent notification with HTML', () => {
+    test('Renders an urgent notification with HTML', () => {
         const html = { __html: '<u>Urgent requirement</u>' };
         render(
             <NotificationItem
@@ -34,7 +34,7 @@ describe('NotificationItem', () => {
         expect(listItem).toContainHTML('<u>Urgent requirement</u>');
     });
 
-    it('Should render an urgent notification without HTML', () => {
+    test('Renders an urgent notification without HTML', () => {
         render(
             <NotificationItem
                 type="urgent"
@@ -49,7 +49,7 @@ describe('NotificationItem', () => {
         expect(listItem).toHaveStyle('color: red');
     });
 
-    it('Should call markAsRead when clicked', () => {
+    test('Calls markAsRead when clicked', () => {
         render(
             <NotificationItem
                 type="default"

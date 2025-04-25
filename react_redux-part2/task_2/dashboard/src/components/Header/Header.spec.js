@@ -14,7 +14,7 @@ describe('Header', () => {
         });
     });
 
-    it('Should render without crashing', () => {
+    test('Renders without crashing', () => {
         render(
             <Provider store={store}>
                 <Header />
@@ -23,7 +23,7 @@ describe('Header', () => {
         expect(screen.getByText(/school Dashboard/i)).toBeInTheDocument();
     });
 
-    it('Should display logout button when logged in', () => {
+    test('Displays logout button when logged in', () => {
         store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
         const { container } = render(
             <Provider store={store}>
@@ -36,7 +36,7 @@ describe('Header', () => {
         expect(state.isLoggedIn).toBe(true);
     });
 
-    it('Should dispatch logout action on logout button click', () => {
+    test('Dispatches logout action on logout button click', () => {
         store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
         render(
             <Provider store={store}>

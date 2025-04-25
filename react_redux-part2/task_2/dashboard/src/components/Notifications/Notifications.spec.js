@@ -1,133 +1,186 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import Notifications from './Notifications';
+import notificationsSlice, { fetchNotifications } from '../../features/notifications/notificationsSlice';
 
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useDispatch: jest.fn().mockReturnValue(jest.fn()),
-    useSelector: jest.fn()
-}));
+const flushPromises = () => new Promise(jest.requireActual('timers').setImmediate);
 
-import { useSelector, useDispatch } from 'react-redux';
+async function advanceTimersAndFlush(ms) {
+    jest.advanceTimersByTime(ms);
+    await flushPromises();
+}
 
 describe('Notifications', () => {
+    let store;
+    let mockAxios;
     beforeEach(() => {
-        jest.clearAllMocks();
-
-        useSelector.mockImplementation(selector => {
-            const state = {
-                notifications: {
-                    notifications: [],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
+        store = configureStore({
+            reducer: {
+                notifications: notificationsSlice,
+            },
         });
+        mockAxios = new MockAdapter(axios);
     });
 
-    it('Should render without crashing', () => {
-        render(<Notifications />);
-        expect(screen.getByText('Your notifications')).toBeInTheDocument();
-    });
-
-    it('Should render loading state', () => {
-        useSelector.mockImplementation(selector => {
-            const state = {
-                notifications: {
-                    notifications: [],
-                    loading: true,
-                    error: null
-                }
-            };
-            return selector(state);
+    test('Renders without crashing', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+            notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: '' } },
+            ],
         });
-
-        render(<Notifications />);
-        expect(screen.getByText('Loading notifications...')).toBeInTheDocument();
-        expect(screen.getByText('Loading notifications...').className).toBe('loading');
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+        await store.dispatch(fetchNotifications());
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
+        expect(screen.getByText('New course available')).toBeInTheDocument();
+        expect(screen.getByText('New resume available')).toBeInTheDocument();
     });
 
-    it('Should render error state', () => {
-        useSelector.mockImplementation(selector => {
-            const state = {
-                notifications: {
-                    notifications: [],
-                    loading: false,
-                    error: 'Failed to fetch notifications'
-                }
-            };
-            return selector(state);
+    test('Toggles drawer visibility when clicking the title', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+            notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: '' } },
+            ],
         });
-
-        render(<Notifications />);
-        expect(screen.getByText(/Error loading notifications:/)).toBeInTheDocument();
-        expect(screen.getByText(/Error loading notifications:/).className).toBe('error');
-    });
-
-    it('Should toggle drawer on click', () => {
-        render(<Notifications />);
-
-        const drawer = screen.getByText(/no new notifications for now/i).closest('.Notifications');
-        expect(drawer).not.toHaveClass('visible');
-
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+        await store.dispatch(fetchNotifications());
+        const { container } = render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        const notificationsDrawer = container.querySelector('.Notifications');
+        expect(notificationsDrawer).toHaveClass('visible');
         fireEvent.click(screen.getByText(/your notifications/i));
-        expect(drawer).toHaveClass('visible');
-
+        expect(notificationsDrawer).not.toHaveClass('visible');
+        expect(screen.queryByRole('listitem', { name: 'New course available' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('listitem', { name: 'New resume available' })).not.toBeInTheDocument();
         fireEvent.click(screen.getByText(/your notifications/i));
-        expect(drawer).not.toHaveClass('visible');
+        expect(notificationsDrawer).toHaveClass('visible');
+        expect(screen.getByText('New course available')).toBeInTheDocument();
+        expect(screen.getByText('New resume available')).toBeInTheDocument();
     });
 
-    it('Should close drawer on close button', () => {
-        useSelector.mockImplementation(selector => {
-            const state = {
-                notifications: {
-                    notifications: [
-                        { id: 1, type: "default", value: "New course available" },
-                        { id: 2, type: "urgent", value: "New resume available" },
-                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
+    test('Close drawer on close button', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+            notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: '' } },
+            ],
         });
-
-        const { container } = render(<Notifications />);
-
-        fireEvent.click(screen.getByText(/your notifications/i));
-        const drawer = container.querySelector('.Notifications');
-        expect(drawer).toHaveClass('visible');
-
-        fireEvent.click(screen.getByRole('button', { name: /close/i }));
-        expect(drawer).not.toHaveClass('visible');
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+        await store.dispatch(fetchNotifications());
+        const { container } = render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        const notificationsDrawer = container.querySelector('.Notifications');
+        fireEvent.click(screen.getByAltText('close icon'));
+        expect(notificationsDrawer).not.toHaveClass('visible');
     });
 
-    it('Should mark notification as read', () => {
-        const mockDispatch = jest.fn();
-        useDispatch.mockReturnValue(mockDispatch);
-
-        useSelector.mockImplementation(selector => {
-            const state = {
-                notifications: {
-                    notifications: [
-                        { id: 1, type: "default", value: "New course available" },
-                        { id: 2, type: "urgent", value: "New resume available" },
-                        { id: 3, type: "urgent", html: { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
+    test('Marks notification as read', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+            notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: '' } },
+            ],
         });
-
-        render(<Notifications />);
-
-        fireEvent.click(screen.getByText(/your notifications/i));
-
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+        await store.dispatch(fetchNotifications());
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
         fireEvent.click(screen.getByText('New course available'));
+        const state = store.getState().notifications;
+        expect(state.notifications).toEqual([
+            { "id": 2, "type": "urgent", "value": "New resume available" },
+            { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+        ]);
+    });
 
-        expect(mockDispatch).toHaveBeenCalled();
+    test('Displays "No new notifications" when there are no notifications', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(500, {
+            message: 'Internal Server Error',
+        });
+        await store.dispatch(fetchNotifications());
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        await waitFor(() => {
+            expect(screen.getByText('No new notifications for now')).toBeInTheDocument();
+        });
+    });
+
+    test('Does not re-render when drawer visibility is toggled', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+            notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: '' } },
+            ],
+        });
+        await store.dispatch(fetchNotifications());
+        let renderCount = 0;
+        const MemoizedNotifications = Notifications;
+        const OriginalNotifications = MemoizedNotifications.type;
+        MemoizedNotifications.type = function MockNotifications(props) {
+            renderCount++;
+            return OriginalNotifications(props);
+        };
+        const { container } = render(
+            <Provider store={store}>
+                <MemoizedNotifications />
+            </Provider>
+        );
+        expect(renderCount).toBe(1);
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(container.querySelector('.Notifications')).not.toHaveClass('visible');
+        expect(renderCount).toBe(1);
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(container.querySelector('.Notifications')).toHaveClass('visible');
+        expect(renderCount).toBe(1);
+    });
+
+    test('Displays loading indicator with fake timers', async () => {
+        jest.useFakeTimers();
+        let resolveApi;
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(() =>
+            new Promise(resolve => {
+                resolveApi = resolve;
+                setTimeout(() => resolve([200, { notifications: [] }]), 1000);
+            })
+        );
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        act(() => {
+            store.dispatch(fetchNotifications());
+        });
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 });

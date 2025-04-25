@@ -1,21 +1,16 @@
 import CourseListRow from './CourseListRow/CourseListRow';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectCourse, unSelectCourse } from '../../features/courses/coursesSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import './CourseList.css'
 import WithLogging from '../../components/HOC/WithLogging';
+import { selectCourse, unSelectCourse } from '../../features/courses/coursesSlice';
 
 function CourseList() {
     const { courses } = useSelector((state) => state.courses);
     const dispatch = useDispatch();
-
     const onChangeRow = (id, checked) => {
-        if (checked) {
-            dispatch(selectCourse(id));
-        } else {
-            dispatch(unSelectCourse(id));
-        }
-    }
-
+        const action = checked ? selectCourse : unSelectCourse;
+        dispatch(action(id));
+    };
     return (
         <div className="courses">
             {courses.length > 0 ? (
@@ -28,11 +23,11 @@ function CourseList() {
                         {courses.map((course) => (
                             <CourseListRow
                                 key={course.id}
+                                id={course.id}
                                 textFirstCell={course.name}
                                 textSecondCell={course.credit}
-                                isSelected={course.isSelected}
                                 onChangeRow={onChangeRow}
-                                id={course.id}
+                                isSelected={course.isSelected || false}
                             />
                         ))}
                     </tbody>

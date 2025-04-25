@@ -1,47 +1,24 @@
-import { render, waitFor, screen } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useDispatch: jest.fn().mockReturnValue(jest.fn()),
-    useSelector: jest.fn()
-}));
-
-import { useSelector, useDispatch } from 'react-redux';
-
-jest.mock('axios');
+import authSlice, { logout, login } from '../features/auth/authSlice';
+import notificationsSlice from '../features/notifications/notificationsSlice';
+import coursesSlice from '../features/courses/coursesSlice';
 
 describe('App Component Integration Tests', () => {
+    let store;
     let axiosMock;
-    let mockDispatch;
-
     beforeEach(() => {
-        jest.clearAllMocks();
-        mockDispatch = jest.fn();
-        useDispatch.mockReturnValue(mockDispatch);
-
-        useSelector.mockImplementation((selector) => {
-            const state = {
-                auth: {
-                    isLoggedIn: false,
-                    user: null
-                },
-                courses: { courses: [], status: 'idle', error: null },
-                notifications: {
-                    notifications: [
-                        { id: 1, type: 'default', value: 'New course available' },
-                        { id: 2, type: 'urgent', value: 'New resume available' },
-                        { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
+        store = configureStore({
+            reducer: {
+                auth: authSlice,
+                courses: coursesSlice,
+                notifications: notificationsSlice
+            },
         });
-
         axiosMock = new MockAdapter(axios);
         axiosMock
             .onGet('http://localhost:5173/courses.json')
@@ -62,115 +39,67 @@ describe('App Component Integration Tests', () => {
                 ],
             });
     });
-
     afterEach(() => {
         axiosMock.restore();
     });
+    const renderWithStore = () => {
+        return render(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
+    };
 
-    it('Should not populate courses when not logged in', async () => {
-        render(<App />);
-
+    test('Should not populate courses when not logged in', async () => {
+        renderWithStore();
+        expect(store.getState().courses.courses).toHaveLength(0);
         await waitFor(() => {
-            expect(mockDispatch).toHaveBeenCalled();
-
-            expect(screen.getByText('Login to access the full dashboard')).toBeInTheDocument();
+            expect(store.getState().courses.courses).toHaveLength(0);
+            expect(store.getState().notifications.notifications).toEqual([
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+            ]);
         });
     });
 
-    it('Should populate courses WHEN logged in', async () => {
-        useSelector.mockImplementation((selector) => {
-            const state = {
-                auth: {
-                    isLoggedIn: true,
-                    user: { email: 'test@example.com' }
-                },
-                courses: {
-                    courses: [
-                        { id: 1, name: 'ES6', credit: 60 },
-                        { id: 2, name: 'Webpack', credit: 20 },
-                        { id: 3, name: 'React', credit: 40 },
-                    ],
-                    status: 'succeeded',
-                    error: null
-                },
-                notifications: {
-                    notifications: [
-                        { id: 1, type: 'default', value: 'New course available' },
-                        { id: 2, type: 'urgent', value: 'New resume available' },
-                        { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
-        });
-
-        render(<App />);
-
+    test('Should populate courses WHEN logged in', async () => {
+        store.dispatch(login({
+            email: 'test@example.com',
+            password: 'password123'
+        }));
+        renderWithStore();
+        expect(store.getState().courses.courses).toHaveLength(0);
         await waitFor(() => {
-            expect(screen.getByText('Available courses')).toBeInTheDocument();
-            expect(screen.getByText('ES6')).toBeInTheDocument();
-            expect(screen.getByText('Webpack')).toBeInTheDocument();
-            expect(screen.getByText('React')).toBeInTheDocument();
+            expect(store.getState().courses.courses).toEqual([
+                { id: 1, name: 'ES6', credit: 60, isSelected: false },
+                { id: 2, name: 'Webpack', credit: 20, isSelected: false },
+                { id: 3, name: 'React', credit: 40, isSelected: false },
+            ],
+            );
+            expect(store.getState().notifications.notifications).toEqual([
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+            ]);
         });
     });
 
-    it('Should CLEAR courses on logout', async () => {
-        useSelector.mockImplementation((selector) => {
-            const state = {
-                auth: {
-                    isLoggedIn: true,
-                    user: { email: 'test@example.com' }
-                },
-                courses: {
-                    courses: [
-                        { id: 1, name: 'ES6', credit: 60 },
-                        { id: 2, name: 'Webpack', credit: 20 },
-                        { id: 3, name: 'React', credit: 40 },
-                    ],
-                    status: 'succeeded',
-                    error: null
-                },
-                notifications: {
-                    notifications: [
-                        { id: 1, type: 'default', value: 'New course available' },
-                        { id: 2, type: 'urgent', value: 'New resume available' },
-                        { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
+    test('Should CLEAR courses on logout', async () => {
+        store.dispatch(login({
+            email: 'test@example.com',
+            password: 'password123'
+        }));
+        renderWithStore();
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toEqual([
+                { id: 1, name: 'ES6', credit: 60, isSelected: false },
+                { id: 2, name: 'Webpack', credit: 20, isSelected: false },
+                { id: 3, name: 'React', credit: 40, isSelected: false },
+            ],
+            );
         });
-
-        const { rerender } = render(<App />);
-
-        expect(screen.getByText('Available courses')).toBeInTheDocument();
-
-        useSelector.mockImplementation((selector) => {
-            const state = {
-                auth: {
-                    isLoggedIn: false,
-                    user: null
-                },
-                courses: { courses: [], status: 'idle', error: null },
-                notifications: {
-                    notifications: [
-                        { id: 1, type: 'default', value: 'New course available' },
-                        { id: 2, type: 'urgent', value: 'New resume available' },
-                        { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } }
-                    ],
-                    loading: false,
-                    error: null
-                }
-            };
-            return selector(state);
-        });
-
-        rerender(<App />);
-
-        expect(screen.getByText('Login to access the full dashboard')).toBeInTheDocument();
+        act(() => store.dispatch(logout()))
+        expect(store.getState().courses.courses).toHaveLength(0);
     });
 });

@@ -14,7 +14,7 @@ describe('Footer', () => {
         });
     });
 
-    it('Should render without crashing', () => {
+    test('Renders without crashing', () => {
         const currentYear = new Date().getFullYear();
         const expectedText = `Copyright ${currentYear} - Holberton School`;
         render(
@@ -26,7 +26,7 @@ describe('Footer', () => {
         expect(footerText).toBeTruthy();
     });
 
-    it('Should display "Contact us" link when logged in', () => {
+    test('Displays "Contact us" link when logged in', () => {
         store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
         render(
             <Provider store={store}>
@@ -39,7 +39,7 @@ describe('Footer', () => {
         expect(contactUsLink).toHaveAttribute('href');
     });
 
-    it('Should not display "Contact us" link when logged out', () => {
+    test('Does not display "Contact us" link when logged out', () => {
         render(
             <Provider store={store}>
                 <Footer />

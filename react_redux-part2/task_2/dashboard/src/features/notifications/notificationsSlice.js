@@ -4,8 +4,7 @@ import { getLatestNotification } from '../../utils/utils';
 
 const initialState = {
     notifications: [],
-    loading: false,
-    error: null
+    loading: false
 };
 
 const API_BASE_URL = 'http://localhost:5173';
@@ -48,19 +47,18 @@ const notificationsSlice = createSlice({
             console.log(`Notification ${notificationId} has been marked as read`);
         },
     },
+
     extraReducers: (builder) => {
         builder
             .addCase(fetchNotifications.pending, (state) => {
                 state.loading = true;
-                state.error = null;
             })
             .addCase(fetchNotifications.fulfilled, (state, action) => {
                 state.loading = false;
                 state.notifications = action.payload;
             })
-            .addCase(fetchNotifications.rejected, (state, action) => {
+            .addCase(fetchNotifications.rejected, (state) => {
                 state.loading = false;
-                state.error = action.error.message;
             });
     },
 });

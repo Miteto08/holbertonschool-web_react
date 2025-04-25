@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import CourseListRow from './CourseListRow';
 
 describe('CourseListRow', () => {
-    it('Should render a header row with one cell', () => {
+    test('Renders a header row with one cell', () => {
         render(
             <CourseListRow isHeader={true} textFirstCell="Available courses" />
         );
@@ -10,7 +10,7 @@ describe('CourseListRow', () => {
         expect(headerCell).toHaveAttribute('colSpan', '2');
     });
 
-    it('Should render a header row with two cells', () => {
+    test('Renders a header row with two cells', () => {
         render(
             <CourseListRow
                 isHeader={true}
@@ -24,7 +24,7 @@ describe('CourseListRow', () => {
         expect(headerCell2).toBeInTheDocument();
     });
 
-    it('Should render a regular row', () => {
+    test('Renders a regular row', () => {
         render(
             <CourseListRow
                 isHeader={false}

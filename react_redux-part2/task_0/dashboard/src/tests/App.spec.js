@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
 import authSlice, { logout, login } from '../features/auth/authSlice';
 import notificationsSlice from '../features/notifications/notificationsSlice';
-import coursesSlice, { clearCourses } from '../features/courses/coursesSlice';
+import coursesSlice from '../features/courses/coursesSlice';
 
 describe('App Component Integration Tests', () => {
     let store;
@@ -50,22 +50,20 @@ describe('App Component Integration Tests', () => {
         );
     };
 
-    it('Should not populate courses when not logged in', async () => {
+    test('Should not populate courses when not logged in', async () => {
         renderWithStore();
         expect(store.getState().courses.courses).toHaveLength(0);
         await waitFor(() => {
             expect(store.getState().courses.courses).toHaveLength(0);
-            expect(store.getState().notifications).toEqual({
-                notifications: [
-                    { id: 1, type: 'default', value: 'New course available' },
-                    { id: 2, type: 'urgent', value: 'New resume available' },
-                    { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
-                ],
-            });
+            expect(store.getState().notifications.notifications).toEqual([
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+            ]);
         });
     });
 
-    it('Should populate courses WHEN logged in', async () => {
+    test('Should populate courses WHEN logged in', async () => {
         store.dispatch(login({
             email: 'test@example.com',
             password: 'password123'
@@ -79,17 +77,15 @@ describe('App Component Integration Tests', () => {
                 { id: 3, name: 'React', credit: 40 },
             ],
             );
-            expect(store.getState().notifications).toEqual({
-                notifications: [
-                    { id: 1, type: 'default', value: 'New course available' },
-                    { id: 2, type: 'urgent', value: 'New resume available' },
-                    { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
-                ],
-            });
+            expect(store.getState().notifications.notifications).toEqual([
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+            ]);
         });
     });
 
-    it('Should CLEAR courses on logout', async () => {
+    test('Should CLEAR courses on logout', async () => {
         store.dispatch(login({
             email: 'test@example.com',
             password: 'password123'
@@ -103,12 +99,7 @@ describe('App Component Integration Tests', () => {
             ],
             );
         });
-        act(() => {
-            store.dispatch(logout());
-            store.dispatch(clearCourses());
-        });
-        await waitFor(() => {
-            expect(store.getState().courses.courses).toHaveLength(0);
-        });
+        act(() => store.dispatch(logout()))
+        expect(store.getState().courses.courses).toHaveLength(0);
     });
 });

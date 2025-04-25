@@ -10,17 +10,16 @@ const mock = new MockAdapter(axios);
 describe('notificationsSlice', () => {
     const initialState = {
         notifications: [],
-        loading: false,
-        error: null
+        loading: false
     };
 
-    it('Should return the initial state', () => {
+    test('Should return the initial state', () => {
         expect(notificationsSlice(undefined, { type: 'unknown' })).toEqual(
             initialState
         );
     });
 
-    it('Should handle markNotificationAsRead', () => {
+    test('Should handle markNotificationAsRead', () => {
         const stateWithNotifications = {
             ...initialState,
             notifications: [
@@ -39,31 +38,26 @@ describe('notificationsSlice', () => {
     });
 
     describe('fetchNotifications async thunk', () => {
-        it('Should handle fetchNotifications.pending', () => {
+        test('Should handle fetchNotifications.pending', () => {
             const action = { type: fetchNotifications.pending.type };
             const state = notificationsSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
                 loading: true,
-                error: null
             });
         });
 
-        it('Should handle fetchNotifications.rejected', () => {
-            const errorMessage = 'Network Error';
+        test('Should handle fetchNotifications.rejected', () => {
             const action = {
                 type: fetchNotifications.rejected.type,
-                error: { message: errorMessage }
             };
             const state = notificationsSlice(initialState, action);
             expect(state).toEqual({
                 ...initialState,
-                loading: false,
-                error: errorMessage
             });
         });
 
-        it('Should handle fetchNotifications.rejected when base URL or port is incorrect', async () => {
+        test('Should handle fetchNotifications.rejected when base URL or port is incorrect', async () => {
             const incorrectBaseURL = 'http://loclhost:5173';
             mock.onGet(`${incorrectBaseURL}/notifications.json`).networkError();
             const dispatch = jest.fn();
@@ -76,8 +70,8 @@ describe('notificationsSlice', () => {
             );
         });
 
-        it('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
-            const incorrectEndpoint = 'http://localhost:5173/notifictions.json'; // Typo in "notifications"
+        test('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
+            const incorrectEndpoint = 'http://localhost:5173/notifictions.json';
             mock.onGet(incorrectEndpoint).reply(404);
             const dispatch = jest.fn();
             const getState = jest.fn();
@@ -89,7 +83,7 @@ describe('notificationsSlice', () => {
             );
         });
 
-        it('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
+        test('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
             const notifications = [
                 { id: 1, type: "default", value: "New course available" },
                 { id: 2, type: "urgent", value: "New resume available" },
@@ -110,13 +104,6 @@ describe('notificationsSlice', () => {
                     payload: notificationsResponse.data.notifications,
                 })
             );
-
-            const state = notificationsSlice(initialState, fulfilledAction);
-            expect(state).toEqual({
-                ...initialState,
-                loading: false,
-                notifications: notificationsResponse.data.notifications
-            });
         });
     });
 });

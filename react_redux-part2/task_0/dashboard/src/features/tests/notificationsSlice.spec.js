@@ -1,5 +1,7 @@
 import notificationsSlice, {
     markNotificationAsRead,
+    showDrawer,
+    hideDrawer,
     fetchNotifications,
 } from '../notifications/notificationsSlice';
 import axios from 'axios';
@@ -10,15 +12,16 @@ const mock = new MockAdapter(axios);
 describe('notificationsSlice', () => {
     const initialState = {
         notifications: [],
+        displayDrawer: true,
     };
 
-    it('Should return the initial state', () => {
+    test('Should return the initial state', () => {
         expect(notificationsSlice(undefined, { type: 'unknown' })).toEqual(
             initialState
         );
     });
 
-    it('Should handle markNotificationAsRead', () => {
+    test('Should handle markNotificationAsRead', () => {
         const stateWithNotifications = {
             ...initialState,
             notifications: [
@@ -36,8 +39,28 @@ describe('notificationsSlice', () => {
         );
     });
 
+    test('Should handle showDrawer', () => {
+        const action = showDrawer();
+        const expectedState = {
+            ...initialState,
+            displayDrawer: true,
+        };
+        expect(notificationsSlice(initialState, action)).toEqual(expectedState);
+    });
+
+    test('Should handle hideDrawer', () => {
+        const stateWithDrawerClosed = {
+            ...initialState,
+            displayDrawer: false,
+        };
+        const action = hideDrawer();
+        expect(notificationsSlice(initialState, action)).toEqual(
+            stateWithDrawerClosed
+        );
+    });
+
     describe('fetchNotifications async thunk', () => {
-        it('Should handle fetchNotifications.pending', () => {
+        test('Should handle fetchNotifications.pending', () => {
             const action = { type: fetchNotifications.pending.type };
             const state = notificationsSlice(initialState, action);
             expect(state).toEqual({
@@ -45,7 +68,7 @@ describe('notificationsSlice', () => {
             });
         });
 
-        it('Should handle fetchNotifications.rejected', () => {
+        test('Should handle fetchNotifications.rejected', () => {
             const action = {
                 type: fetchNotifications.rejected.type,
             };
@@ -55,7 +78,7 @@ describe('notificationsSlice', () => {
             });
         });
 
-        it('Should handle fetchNotifications.rejected when base URL or port is incorrect', async () => {
+        test('Should handle fetchNotifications.rejected when base URL or port is incorrect', async () => {
             const incorrectBaseURL = 'http://loclhost:5173';
             mock.onGet(`${incorrectBaseURL}/notifications.json`).networkError();
             const dispatch = jest.fn();
@@ -68,7 +91,7 @@ describe('notificationsSlice', () => {
             );
         });
 
-        it('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
+        test('Should handle fetchNotifications.rejected when endpoint is incorrect', async () => {
             const incorrectEndpoint = 'http://localhost:5173/notifictions.json'; // Typo in "notifications"
             mock.onGet(incorrectEndpoint).reply(404);
             const dispatch = jest.fn();
@@ -81,7 +104,7 @@ describe('notificationsSlice', () => {
             );
         });
 
-        it('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
+        test('Should handle fetchNotifications.fulfilled when API request is successful', async () => {
             const notifications = [
                 { id: 1, type: "default", value: "New course available" },
                 { id: 2, type: "urgent", value: "New resume available" },

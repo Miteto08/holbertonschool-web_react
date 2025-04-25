@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
 
 describe('BodySectionWithMarginBottom', () => {
-    it('Should render correctly', () => {
+    it('Renders correctly', () => {
         render(
             <BodySectionWithMarginBottom title="Test Title">
                 <p>Test children</p>

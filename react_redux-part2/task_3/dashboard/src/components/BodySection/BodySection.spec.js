@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import BodySection from './BodySection';
 
 describe('BodySection', () => {
-    it('Should render title and children', () => {
+    it('renders title and children', () => {
         render(
             <BodySection title="Test Title">
                 <p>Test children</p>
