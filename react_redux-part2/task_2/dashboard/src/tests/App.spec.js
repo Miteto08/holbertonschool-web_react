@@ -1,5 +1,4 @@
-import { act, render, waitFor, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { render, waitFor, screen } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import App from '../App';

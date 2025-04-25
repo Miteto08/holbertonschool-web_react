@@ -36,7 +36,6 @@ const CourseList = ({ listCourses }) => {
   )
 }
 
-// Define propTypes
 CourseList.propTypes = {
   listCourses: PropTypes.arrayOf(CourseShape),
 };

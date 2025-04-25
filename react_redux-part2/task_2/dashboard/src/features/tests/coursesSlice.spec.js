@@ -1,4 +1,4 @@
-import coursesSlice, { clearCourses, fetchCourses } from '../courses/coursesSlice';
+import coursesSlice, { clearCourses, fetchCourses, selectCourse, unSelectCourse } from '../courses/coursesSlice';
 import { logout } from '../auth/authSlice';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -36,7 +36,10 @@ describe('coursesSlice', () => {
             expect(state).toEqual({
                 ...initialState,
                 status: 'succeeded',
-                courses: mockCourses
+                courses: mockCourses.map(course => ({
+                    ...course,
+                    isSelected: false
+                }))
             });
         });
 
@@ -114,6 +117,49 @@ describe('coursesSlice', () => {
             };
             const state = coursesSlice(previousState, clearCourses());
             expect(state).toEqual(initialState);
+        });
+    });
+
+    describe('selectCourse and unSelectCourse actions', () => {
+        it('Should select a course', () => {
+            const stateWithCourses = {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60, isSelected: false },
+                    { id: 2, name: 'Webpack', credit: 20, isSelected: false }
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const state = coursesSlice(stateWithCourses, selectCourse(1));
+            expect(state.courses[0].isSelected).toBe(true);
+            expect(state.courses[1].isSelected).toBe(false);
+        });
+
+        it('Should unselect a course', () => {
+            const stateWithSelectedCourse = {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60, isSelected: true },
+                    { id: 2, name: 'Webpack', credit: 20, isSelected: false }
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const state = coursesSlice(stateWithSelectedCourse, unSelectCourse(1));
+            expect(state.courses[0].isSelected).toBe(false);
+            expect(state.courses[1].isSelected).toBe(false);
+        });
+
+        it('Should do nothing if course id does not exist', () => {
+            const stateWithCourses = {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60, isSelected: false },
+                    { id: 2, name: 'Webpack', credit: 20, isSelected: false }
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const state = coursesSlice(stateWithCourses, selectCourse(3));
+            expect(state).toEqual(stateWithCourses);
         });
     });
 

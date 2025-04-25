@@ -32,10 +32,8 @@ describe('NotificationItem Component', () => {
         />
       )
 
-      // Simulate click event
       wrapper.find('li').simulate('click')
 
-      // Check if markAsRead was called with the correct ID
       expect(markAsReadSpy).toHaveBeenCalledWith(1)
     })
   })

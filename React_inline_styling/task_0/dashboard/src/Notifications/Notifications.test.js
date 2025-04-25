@@ -29,12 +29,12 @@ describe('Notifications Component', () => {
         <Notifications displayDrawer={true} listNotifications={[]} />
       )
 
-      ;[wrapperWithoutList, wrapperWithEmptyList].forEach(wrapper => {
-        expect(wrapper.find(NotificationItem)).toHaveLength(1)
-        expect(wrapper.find(NotificationItem).prop('value')).toEqual(
-          'No new notification for now'
-        )
-      })
+        ;[wrapperWithoutList, wrapperWithEmptyList].forEach(wrapper => {
+          expect(wrapper.find(NotificationItem)).toHaveLength(1)
+          expect(wrapper.find(NotificationItem).prop('value')).toEqual(
+            'No new notification for now'
+          )
+        })
     })
 
     it('renders the correct number of notifications and their content when listNotifications contains elements', () => {
@@ -67,7 +67,7 @@ describe('Notifications Component', () => {
     let consoleLogSpy
 
     beforeAll(() => {
-      consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+      consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
     })
 
     afterAll(() => {
@@ -84,10 +84,8 @@ describe('Notifications Component', () => {
         />
       )
 
-      // Call the markAsRead method directly
       wrapper.instance().markAsRead(1)
 
-      // Check if console.log was called with the right message
       expect(consoleLogSpy).toHaveBeenCalledWith(
         'Notification 1 has been marked as read'
       )
@@ -104,16 +102,13 @@ describe('Notifications Component', () => {
         <Notifications displayDrawer listNotifications={listNotifications} />
       )
 
-      // Spy on shouldComponentUpdate to check if re-render is prevented
       const shouldComponentUpdateSpy = jest.spyOn(
         Notifications.prototype,
         'shouldComponentUpdate'
       )
 
-      // Update the props with the same list
       wrapper.setProps({ listNotifications })
 
-      // Expect shouldComponentUpdate to return false, meaning no re-render
       expect(shouldComponentUpdateSpy).toHaveReturnedWith(false)
 
       shouldComponentUpdateSpy.mockRestore()
@@ -133,16 +128,13 @@ describe('Notifications Component', () => {
         <Notifications displayDrawer listNotifications={initialList} />
       )
 
-      // Spy on shouldComponentUpdate to check if re-render is triggered
       const shouldComponentUpdateSpy = jest.spyOn(
         Notifications.prototype,
         'shouldComponentUpdate'
       )
 
-      // Update the props with a longer list
       wrapper.setProps({ listNotifications: newList })
 
-      // Expect shouldComponentUpdate to return true, meaning a re-render should happen
       expect(shouldComponentUpdateSpy).toHaveReturnedWith(true)
 
       shouldComponentUpdateSpy.mockRestore()

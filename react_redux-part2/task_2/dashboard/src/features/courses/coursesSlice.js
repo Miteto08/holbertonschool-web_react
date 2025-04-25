@@ -24,6 +24,20 @@ const coursesSlice = createSlice({
             state.courses = [];
             state.status = 'idle';
             state.error = null;
+        },
+        selectCourse: (state, action) => {
+            const courseId = action.payload;
+            const course = state.courses.find(course => course.id === courseId);
+            if (course) {
+                course.isSelected = true;
+            }
+        },
+        unSelectCourse: (state, action) => {
+            const courseId = action.payload;
+            const course = state.courses.find(course => course.id === courseId);
+            if (course) {
+                course.isSelected = false;
+            }
         }
     },
     extraReducers: (builder) => {
@@ -33,7 +47,10 @@ const coursesSlice = createSlice({
             })
             .addCase(fetchCourses.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.courses = action.payload;
+                state.courses = action.payload.map(course => ({
+                    ...course,
+                    isSelected: false
+                }));
             })
             .addCase(fetchCourses.rejected, (state, action) => {
                 state.status = 'failed';
@@ -47,5 +64,5 @@ const coursesSlice = createSlice({
     }
 });
 
-export const { clearCourses } = coursesSlice.actions;
+export const { clearCourses, selectCourse, unSelectCourse } = coursesSlice.actions;
 export default coursesSlice.reducer;
