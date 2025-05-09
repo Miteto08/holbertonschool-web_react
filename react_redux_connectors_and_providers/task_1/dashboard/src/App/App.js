@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StyleSheet, css } from 'aphrodite';
 import Header from '../Header/Header';
@@ -11,7 +12,7 @@ import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBot
 import { getLatestNotification } from '../utils/utils';
 import WithLogging from '../HOC/WithLogging';
 import AppContext, { defaultUser, defaultLogOut } from './AppContext';
-
+import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
 class App extends React.Component {
   static contextType = AppContext;
 
