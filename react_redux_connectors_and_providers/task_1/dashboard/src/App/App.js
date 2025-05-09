@@ -18,7 +18,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayDrawer: false,
       user: defaultUser,
       logOut: defaultLogOut,
       listNotifications: [
@@ -27,19 +26,6 @@ class App extends React.Component {
         { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
       ],
     };
-
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
-  }
-
-  handleDisplayDrawer() {
-    this.setState({ displayDrawer: true });
-  }
-
-  handleHideDrawer() {
-    this.setState({ displayDrawer: false });
   }
 
   logIn(email, password) {
@@ -80,7 +66,8 @@ class App extends React.Component {
   };
 
   render() {
-    const { displayDrawer, user, listNotifications } = this.state;
+    const { user, listNotifications } = this.state;
+    const { isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer } = this.props;
     const isIndex = true;
     const listCourses = [
       { id: 1, name: 'ES6', credit: 60 },
@@ -99,8 +86,8 @@ class App extends React.Component {
           <NotificationsWithLogging
             listNotifications={listNotifications}
             displayDrawer={displayDrawer}
-            handleDisplayDrawer={this.handleDisplayDrawer}
-            handleHideDrawer={this.handleHideDrawer}
+            handleDisplayDrawer={displayNotificationDrawer}
+            handleHideDrawer={hideNotificationDrawer}
             markNotificationAsRead={this.markNotificationAsRead}
           />
           <div className={css(styles.app)}>
@@ -147,8 +134,28 @@ const styles = StyleSheet.create({
 
 export function mapStateToProps(state) {
   return {
-    isLoggedIn: state.get('isUserLoggedIn')
+    isLoggedIn: state.get('isUserLoggedIn'),
+    displayDrawer: state.get('isNotificationDrawerVisible'),
   };
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+  displayNotificationDrawer,
+  hideNotificationDrawer
+}
+
+App.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+  displayDrawer: PropTypes.bool.isRequired,
+  displayNotificationDrawer: PropTypes.func.isRequired,
+  hideNotificationDrawer: PropTypes.func.isRequired,
+}
+
+App.defaultProps = {
+  isLoggedIn: false,
+  displayDrawer: false,
+  displayNotificationDrawer: () => { },
+  hideNotificationDrawer: () => { },
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
