@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StyleSheet, css } from 'aphrodite';
 import Header from '../Header/Header';
@@ -11,8 +12,9 @@ import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBot
 import { getLatestNotification } from '../utils/utils';
 import WithLogging from '../HOC/WithLogging';
 import AppContext, { defaultUser, defaultLogOut } from './AppContext';
+import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
 
-class App extends React.Component {
+export class App extends React.Component {
   static contextType = AppContext;
 
   constructor(props) {
@@ -26,23 +28,6 @@ class App extends React.Component {
         { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
       ],
     };
-  }
-
-  logIn(email, password) {
-    this.setState({
-      user: {
-        email: email,
-        password: password,
-        isLoggedIn: true,
-      },
-      logOut: () => {
-        this.setState({
-          user: defaultUser,
-          logOut: defaultLogOut,
-        });
-        alert('Logging you out');
-      }
-    });
   }
 
   markNotificationAsRead(id) {
@@ -67,7 +52,7 @@ class App extends React.Component {
 
   render() {
     const { user, listNotifications } = this.state;
-    const { isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer } = this.props;
+    const { isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer, loginRequest } = this.props;
     const isIndex = true;
     const listCourses = [
       { id: 1, name: 'ES6', credit: 60 },
@@ -109,7 +94,7 @@ class App extends React.Component {
               </p>
             </BodySection>
             <div className={css(styles.footer)}>
-              <Footer isIndex={isIndex} />
+              <Footer />
             </div>
           </div>
         </>
@@ -141,7 +126,8 @@ export function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   displayNotificationDrawer,
-  hideNotificationDrawer
+  hideNotificationDrawer,
+  loginRequest
 }
 
 App.propTypes = {
@@ -149,6 +135,7 @@ App.propTypes = {
   displayDrawer: PropTypes.bool.isRequired,
   displayNotificationDrawer: PropTypes.func.isRequired,
   hideNotificationDrawer: PropTypes.func.isRequired,
+  loginRequest: PropTypes.func.isRequired,
 }
 
 App.defaultProps = {
@@ -156,6 +143,7 @@ App.defaultProps = {
   displayDrawer: false,
   displayNotificationDrawer: () => { },
   hideNotificationDrawer: () => { },
+  loginRequest: () => { },
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
