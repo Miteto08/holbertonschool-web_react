@@ -1,46 +1,56 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import Footer from './Footer';
-import AppContext from '../App/AppContext';
+import { shallow } from 'enzyme';
+import { Footer } from './Footer';
 
 jest.mock('../utils/utils', () => ({
   getFullYear: jest.fn(() => 2024),
   getFooterCopy: jest.fn(() => 'Holberton School'),
 }));
 
-describe('Footer Component', () => {
-  it('should render without crashing', () => {
-    shallow(
-      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
-        <Footer isIndex={true} />
-      </AppContext.Provider>
-    );
+describe('<Footer />', () => {
+  let wrapper;
+
+  describe('default', () => {
+    beforeEach(() => {
+      wrapper = shallow(<Footer />);
+    });
+
+    it('renders without crashing', () => {
+      expect(wrapper.exists()).toBe(true);
+    });
+
+    it('renders the text "Copyright"', () => {
+      expect(wrapper.text()).toContain('Copyright');
+    });
+
+    it('does not render Contact link', () => {
+      expect(wrapper.find('a')).toHaveLength(0);
+    });
   });
 
-  it('should render the text "Copyright"', () => {
-    const wrapper = mount(
-      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
-        <Footer isIndex={true} />
-      </AppContext.Provider>
-    );
-    expect(wrapper.find('footer').text()).toContain('Copyright');
-  });
+  describe('with logged in props', () => {
+    beforeEach(() => {
+      const props = {
+        user: {
+          email: 'a@a.com',
+          password: 'azerty1234',
+          isLoggedIn: true,
+        },
+      };
 
-  it('should not render the "Contact us" link when the user is logged out', () => {
-    const wrapper = mount(
-      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
-        <Footer isIndex={true} />
-      </AppContext.Provider>
-    );
-    expect(wrapper.find('a[href="/contact"]').exists()).toBe(false);
-  });
+      wrapper = shallow(<Footer {...props} />);
+    });
 
-  it('should render the "Contact us" link when the user is logged in', () => {
-    const wrapper = mount(
-      <AppContext.Provider value={{ user: { isLoggedIn: true } }}>
-        <Footer isIndex={true} />
-      </AppContext.Provider>
-    );
-    expect(wrapper.find('a[href="/contact"]').exists()).toBe(true);
+    it('does render Contact link', () => {
+      expect(wrapper.find('a')).toHaveLength(1);
+    });
+
+    it('renders the correct copyright year', () => {
+      expect(wrapper.text()).toContain('2024');
+    });
+
+    it('renders the correct footer copy', () => {
+      expect(wrapper.text()).toContain('Holberton School');
+    });
   });
 });
