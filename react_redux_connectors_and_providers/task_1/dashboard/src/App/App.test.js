@@ -13,9 +13,11 @@ describe('<App />', () => {
     isUserLoggedIn: false,
     user: {}
   });
+
   let wrapper, store;
 
   beforeEach(() => {
+    // Disable styles during tests
     StyleSheetTestUtils.suppressStyleInjection();
 
     store = mockStore(defaultState);
@@ -73,6 +75,7 @@ describe('<App />', () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => { });
       wrapper.setState({ logOut: logOutMock });
 
+      // Simulate Ctrl+H keydown event
       window.dispatchEvent(new KeyboardEvent('keydown', {
         key: 'h',
         ctrlKey: true,
