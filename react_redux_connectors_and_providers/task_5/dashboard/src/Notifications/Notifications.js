@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import NotificationItem from './NotificationItem';
 import NotificationItemShape from './NotificationItemShape';
+import { fetchNotifications, markAsRead } from '../actions/notificationActionCreators';
 
 class Notifications extends React.PureComponent {
   static propTypes = {
@@ -11,14 +13,20 @@ class Notifications extends React.PureComponent {
     handleDisplayDrawer: PropTypes.func,
     handleHideDrawer: PropTypes.func,
     markNotificationAsRead: PropTypes.func,
+    fetchNotifications: PropTypes.func,
   }
 
   static defaultProps = {
     displayDrawer: false,
     listNotifications: [],
-    handleDisplayDrawer: () => {},
-    handleHideDrawer: () => {},
-    markNotificationAsRead: () => {},
+    handleDisplayDrawer: () => { },
+    handleHideDrawer: () => { },
+    markNotificationAsRead: () => { },
+    fetchNotifications: () => { },
+  }
+
+  componentDidMount() {
+    this.props.fetchNotifications();
   }
 
   handleClose = () => {
@@ -110,12 +118,12 @@ const styles = StyleSheet.create({
     },
   },
   menuItem: {
-    position: 'fixed', // Float above other elements
+    position: 'fixed',
     right: '10px',
     top: '10px',
-    backgroundColor: '#fff8f8', // Light red background
+    backgroundColor: '#fff8f8',
     padding: '10px',
-    cursor: 'pointer', // Change cursor to pointer on hover
+    cursor: 'pointer',
     ':hover': {
       animationName: [opacityFrames, bounceFrames],
       animationDuration: '1s, 0.5s',
@@ -138,4 +146,21 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Notifications;
+export const mapStateToProps = (state) => {
+  const notifications = state.notifications;
+
+  const notificationsList = notifications && notifications.get('notifications') ?
+    Object.values(notifications.get('notifications').toJS()) : [];
+
+  return {
+    listNotifications: notificationsList,
+    displayDrawer: state.ui ? state.ui.get('isNotificationDrawerVisible') : false,
+  };
+};
+
+export const mapDispatchToProps = {
+  fetchNotifications,
+  markNotificationAsRead: markAsRead,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
