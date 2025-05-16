@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
+import courseReducer from './courseReducer';
+import notificationReducer from './notificationReducer';
 import uiReducer from './uiReducer';
-import coursesReducer from './coursesReducer';
-import notificationsReducer from './notificationsReducer';
 
 const rootReducer = combineReducers({
-    ui: uiReducer,
-    courses: coursesReducer,
-    notifications: notificationsReducer,
+  courses: courseReducer,
+  notifications: notificationReducer,
+  ui: uiReducer
 });
 
 export default rootReducer;

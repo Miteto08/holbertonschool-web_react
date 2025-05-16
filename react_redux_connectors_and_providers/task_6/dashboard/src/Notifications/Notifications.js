@@ -20,9 +20,9 @@ export class Notifications extends React.PureComponent {
   static defaultProps = {
     displayDrawer: false,
     listNotifications: {},
-    fetchNotifications: () => { },
-    handleDisplayDrawer: () => { },
-    handleHideDrawer: () => { },
+    fetchNotifications: () => {},
+    handleDisplayDrawer: () => {},
+    handleHideDrawer: () => {},
     markAsRead: () => { },
   }
 

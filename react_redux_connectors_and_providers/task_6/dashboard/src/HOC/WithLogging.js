@@ -11,14 +11,14 @@ function WithLogging(WrappedComponent) {
     componentDidMount() {
       const componentName =
         WrappedComponent.displayName || WrappedComponent.name || 'Component'
-      console.log(`Component ${componentName} is mounted`)
+      //console.log(`Component ${componentName} is mounted`)
     }
 
     // Log message on component unmount
     componentWillUnmount() {
       const componentName =
         WrappedComponent.displayName || WrappedComponent.name || 'Component'
-      console.log(`Component ${componentName} is going to unmount`)
+      //console.log(`Component ${componentName} is going to unmount`)
     }
 
     // Render the wrapped component with the passed props
