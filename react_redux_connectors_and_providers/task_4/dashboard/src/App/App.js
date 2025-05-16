@@ -12,7 +12,7 @@ import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBot
 import { getLatestNotification } from '../utils/utils';
 import WithLogging from '../HOC/WithLogging';
 import AppContext, { defaultUser, defaultLogOut } from './AppContext';
-import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
+import { displayNotificationDrawer, hideNotificationDrawer, loginRequest } from '../actions/uiActionCreators';
 
 export class App extends React.Component {
   static contextType = AppContext;
@@ -25,15 +25,15 @@ export class App extends React.Component {
       listNotifications: [
         { id: 1, type: 'default', value: 'New course available' },
         { id: 2, type: 'urgent', value: 'New resume available' },
-        { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
+        { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
       ],
     };
   }
 
-  markNotificationAsRead(id) {
+  markNotificationAsRead = (id) => {
     const filteredNotifications = this.state.listNotifications.filter(notification => notification.id !== id);
     this.setState({ listNotifications: filteredNotifications });
-  }
+  };
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -52,12 +52,12 @@ export class App extends React.Component {
 
   render() {
     const { user, listNotifications } = this.state;
-    const { isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer, loginRequest } = this.props;
+    const { displayDrawer, isLoggedIn, displayNotificationDrawer, hideNotificationDrawer, loginRequest } = this.props;
     const isIndex = true;
     const listCourses = [
       { id: 1, name: 'ES6', credit: 60 },
       { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 }
+      { id: 3, name: 'React', credit: 40 },
     ];
 
     const LoginWithLogging = WithLogging(Login);
@@ -77,13 +77,13 @@ export class App extends React.Component {
           />
           <div className={css(styles.app)}>
             <Header />
-            {user.isLoggedIn ? (
+            {isLoggedIn ? (
               <BodySectionWithMarginBottom title="Course list">
                 <CourseList listCourses={listCourses} />
               </BodySectionWithMarginBottom>
             ) : (
               <BodySectionWithMarginBottom title="Log in to continue">
-                <LoginWithLogging logIn={this.logIn} />
+                <LoginWithLogging logIn={loginRequest} />
               </BodySectionWithMarginBottom>
             )}
             <BodySection title="News from the School">
@@ -117,33 +117,34 @@ const styles = StyleSheet.create({
   },
 });
 
+// Mettez à jour mapStateToProps et mapDispatchToProps
 export function mapStateToProps(state) {
   return {
-    isLoggedIn: state.get('isUserLoggedIn'),
-    displayDrawer: state.get('isNotificationDrawerVisible'),
+    isLoggedIn: state.ui.get('isUserLoggedIn'),
+    displayDrawer: state.ui.get('isNotificationDrawerVisible'),
   };
 }
 
 const mapDispatchToProps = {
   displayNotificationDrawer,
   hideNotificationDrawer,
-  loginRequest
-}
+  loginRequest,
+};
 
+// Définir propTypes et defaultProps
 App.propTypes = {
-  isLoggedIn: PropTypes.bool.isRequired,
   displayDrawer: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
   displayNotificationDrawer: PropTypes.func.isRequired,
   hideNotificationDrawer: PropTypes.func.isRequired,
   loginRequest: PropTypes.func.isRequired,
-}
+};
 
 App.defaultProps = {
-  isLoggedIn: false,
   displayDrawer: false,
-  displayNotificationDrawer: () => { },
-  hideNotificationDrawer: () => { },
-  loginRequest: () => { },
-}
+  isLoggedIn: false,
+  displayNotificationDrawer: () => {},
+  hideNotificationDrawer: () => {},
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

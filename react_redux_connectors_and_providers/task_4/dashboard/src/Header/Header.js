@@ -1,9 +1,9 @@
-import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import logo from '../assets/holberton-logo.jpg';
 import PropTypes from 'prop-types';
-import { logout } from '../actions/uiActionCreators';
+import React from 'react';
 import { connect } from 'react-redux';
+import { logout } from '../actions/uiActionCreators';
+import logo from '../assets/holberton-logo.jpg';
 
 export class Header extends React.Component {
   static propTypes = {
@@ -22,16 +22,16 @@ export class Header extends React.Component {
     return (
       <header className={css(styles.header)}>
         <img className={css(styles.img)} src={logo} alt="logo" />
-        <h1 className={css(styles.h1)}>School dashboard</h1>
-        {user && (
-          <section id="logoutSection">
-            Welcome {user.email}
-            <a href="#" onClick={(event) => {
-              event.preventDefault();
-              logout();
-            }}>Logout</a>
-          </section>
-        )}
+          <h1 className={css(styles.h1)}>School dashboard</h1>
+          {user && (
+            <section id="logoutSection">
+              Welcome {user.email}
+              <a href="#" onClick={(event) => {
+                event.preventDefault(); // Prévenir le comportement par défaut
+                logout();
+              }}>(logout)</a>
+            </section>
+          )}
       </header>
     );
   }
@@ -58,10 +58,10 @@ const mapDispatchToProps = {
   logout
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
   return {
-    user: state.get('user'),
-  };
+    user: state.ui.get('user')
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
