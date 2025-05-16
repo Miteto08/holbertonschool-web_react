@@ -1,19 +1,15 @@
-import React, { useContext } from 'react';
-import { getFullYear, getFooterCopy } from '../utils/utils';
-import AppContext from '../App/AppContext';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { getFullYear, getFooterCopy } from '../utils/utils';
 
 export function Footer({ user }) {
   return (
     <div>
       <p>
-        Copyright {getFullYear()} - {getFooterCopy(isIndex)}
+        Copyright {getFullYear()} - {getFooterCopy(true)}
       </p>
-      {user &&
-        <p>
-          <a href="#">Contact us</a>
-        </p>
-      }
+      {user && <p><a href="#">Contact us</a></p>}
     </div>
   );
 }
@@ -28,8 +24,8 @@ Footer.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    user: state.get('user'),
-  };
+    user: state.get('user')
+  }
 }
 
 export default connect(mapStateToProps)(Footer);

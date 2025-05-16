@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Header } from '../Header/Header';
+import { Header } from '../Header/Header'; // Importing the Header directly for shallow rendering
 import logo from '../assets/holberton-logo.jpg';
 import { logout } from '../actions/uiActionCreators';
 import { StyleSheetTestUtils } from 'aphrodite';
@@ -12,13 +12,16 @@ describe('<Header />', () => {
 
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+    // Set up a mock user and logout function
     user = {
       email: 'test@example.com',
       isLoggedIn: true,
     };
 
+    // Mock the logout function
     logoutMock = jest.fn();
 
+    // Shallow render the Header component
     wrapper = shallow(<Header user={user} logout={logoutMock} />);
   });
 
@@ -46,14 +49,15 @@ describe('<Header />', () => {
   });
 
   it('does not render the logout section when user is not logged in', () => {
+    // Set user to null for this test case
     wrapper = shallow(<Header user={null} logout={logoutMock} />);
     const logoutSection = wrapper.find('#logoutSection');
-    expect(logoutSection).toHaveLength(0);
+    expect(logoutSection).toHaveLength(0); // logoutSection should not exist
   });
 
   it('calls logout function when logout link is clicked', () => {
     const logoutLink = wrapper.find('a');
-    logoutLink.simulate('click', { preventDefault: () => { } });
-    expect(logoutMock).toHaveBeenCalled();
+    logoutLink.simulate('click', { preventDefault: () => {} }); // Simulate click event
+    expect(logoutMock).toHaveBeenCalled(); // Expect the logout function to be called
   });
 });
