@@ -1,10 +1,8 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import NotificationItem from './NotificationItem';
 import NotificationItemShape from './NotificationItemShape';
-import { fetchNotifications, markAsRead } from '../actions/notificationActionCreators';
 
 class Notifications extends React.PureComponent {
   static propTypes = {
@@ -19,10 +17,10 @@ class Notifications extends React.PureComponent {
   static defaultProps = {
     displayDrawer: false,
     listNotifications: [],
-    handleDisplayDrawer: () => { },
-    handleHideDrawer: () => { },
-    markNotificationAsRead: () => { },
-    fetchNotifications: () => { },
+    handleDisplayDrawer: () => {},
+    handleHideDrawer: () => {},
+    markNotificationAsRead: () => {},
+    fetchNotifications: () => {},
   }
 
   componentDidMount() {
@@ -36,6 +34,7 @@ class Notifications extends React.PureComponent {
 
   render() {
     const { displayDrawer, listNotifications, handleDisplayDrawer, markNotificationAsRead } = this.props;
+    console.log("ma listNotifications", listNotifications.map);
     return (
       <>
         {!displayDrawer && (
@@ -64,12 +63,12 @@ class Notifications extends React.PureComponent {
               <ul className={css(styles.ul)}>
                 {listNotifications.map(notification => (
                   <NotificationItem
-                    key={notification.id}
+                    key={notification.guid}
                     type={notification.type}
                     value={notification.value}
                     html={notification.html}
-                    markAsRead={markNotificationAsRead}
-                    id={notification.id}
+                    markAsRead={markNotificationAsRead(notification.guid)}
+                    id={notification.guid}
                   />
                 ))}
               </ul>
@@ -118,12 +117,12 @@ const styles = StyleSheet.create({
     },
   },
   menuItem: {
-    position: 'fixed',
+    position: 'fixed', // Float above other elements
     right: '10px',
     top: '10px',
-    backgroundColor: '#fff8f8',
+    backgroundColor: '#fff8f8', // Light red background
     padding: '10px',
-    cursor: 'pointer',
+    cursor: 'pointer', // Change cursor to pointer on hover
     ':hover': {
       animationName: [opacityFrames, bounceFrames],
       animationDuration: '1s, 0.5s',
@@ -146,21 +145,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export const mapStateToProps = (state) => {
-  const notifications = state.notifications;
-
-  const notificationsList = notifications && notifications.get('notifications') ?
-    Object.values(notifications.get('notifications').toJS()) : [];
-
-  return {
-    listNotifications: notificationsList,
-    displayDrawer: state.ui ? state.ui.get('isNotificationDrawerVisible') : false,
-  };
-};
-
-export const mapDispatchToProps = {
-  fetchNotifications,
-  markNotificationAsRead: markAsRead,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
+export default Notifications;

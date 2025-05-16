@@ -8,12 +8,14 @@ import {
   LOGIN
 } from '../actions/uiActionTypes';
 
+// Initial state using Immutable.js Map
 const initialState = Map({
   isNotificationDrawerVisible: false,
   isUserLoggedIn: false,
   user: null,
 });
 
+// Reducer function with Immutable.js
 export function uiReducer(state = initialState, action) {
   switch (action.type) {
     case DISPLAY_NOTIFICATION_DRAWER:

@@ -73,30 +73,30 @@ describe('Notifications Component', () => {
       });
     });
 
-    it('calls markNotificationAsRead with correct ID when notification is clicked', () => {
-      const markNotificationAsRead = jest.fn();
-      const notifications = [
-        { id: 1, type: 'default', value: 'Test notification' }
-      ];
+  it('calls markNotificationAsRead with correct ID when notification is clicked', () => {
+    const markNotificationAsRead = jest.fn();
+    const notifications = [
+      { id: 1, type: 'default', value: 'Test notification' }
+    ];
 
-      const wrapper = mount(
-        <Notifications
-          displayDrawer={true}
-          listNotifications={notifications}
-          markNotificationAsRead={markNotificationAsRead}
-        />
-      );
+    const wrapper = mount(
+      <Notifications
+        displayDrawer={true}
+        listNotifications={notifications}
+        markNotificationAsRead={markNotificationAsRead}
+      />
+    );
 
-      // Ensure the markNotificationAsRead function is passed to NotificationItem
-      expect(wrapper.find(NotificationItem).prop('markAsRead')).toEqual(markNotificationAsRead);
+    // Ensure the markNotificationAsRead function is passed to NotificationItem
+    expect(wrapper.find(NotificationItem).prop('markAsRead')).toEqual(markNotificationAsRead);
 
-      // Simulate clicking on the notification item
-      wrapper.find(NotificationItem).simulate('click');
+    // Simulate clicking on the notification item
+    wrapper.find(NotificationItem).simulate('click');
 
-      // Ensure markNotificationAsRead was called with the correct ID
-      expect(markNotificationAsRead).toHaveBeenCalledWith(1);
-    });
+    // Ensure markNotificationAsRead was called with the correct ID
+    expect(markNotificationAsRead).toHaveBeenCalledWith(1);
   });
+});
 
   describe('Notifications component', () => {
     it('does not re-render when updating props with the same list', () => {
@@ -134,7 +134,7 @@ describe('Notifications Component', () => {
       ];
 
       const wrapper = shallow(
-        <Notifications displayDrawer listNotifications={initialList} markNotificationAsRead={() => { }} />
+        <Notifications displayDrawer listNotifications={initialList} markNotificationAsRead={() => {}} />
       );
 
       // Spy on shouldComponentUpdate to check if re-render is triggered

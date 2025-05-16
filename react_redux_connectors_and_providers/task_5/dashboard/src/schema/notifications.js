@@ -1,5 +1,5 @@
 import { normalize, schema } from 'normalizr';
-import * as notificationsData from '../../notifications.json';
+import * as notificationsData from  '../../dist/notifications.json'
 
 
 // Define user entity
@@ -28,14 +28,14 @@ export const notificationsNormalizer = (data) => {
 // Function to get notifications by userId
 export function getAllNotificationsByUser(userId, normalizedData) {
   const { entities, result } = normalizedData;
-
+  console.log("result", result)
   return result
     .filter((notificationId) => entities.notifications[notificationId].author === userId)
     .map((notificationId) => entities.messages[entities.notifications[notificationId].context]);
 }
 
 // Normalize the notifications data
-export const normalizedData = normalize(notificationsData.default, [notification]);
+export const normalizedData = notificationsNormalizer(notificationsData.default);
 
 // Export normalized data and entities
 export default {

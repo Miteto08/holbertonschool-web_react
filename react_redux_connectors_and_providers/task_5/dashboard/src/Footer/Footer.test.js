@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Footer } from './Footer';
 
+// Mock the utility functions
 jest.mock('../utils/utils', () => ({
   getFullYear: jest.fn(() => 2024),
   getFooterCopy: jest.fn(() => 'Holberton School'),
@@ -20,7 +21,7 @@ describe('<Footer />', () => {
     });
 
     it('renders the text "Copyright"', () => {
-      expect(wrapper.text()).toContain('Copyright');
+      expect(wrapper.text()).toContain('Copyright'); // Check for exact text
     });
 
     it('does not render Contact link', () => {

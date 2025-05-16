@@ -27,8 +27,8 @@ export class App extends React.Component {
   }
 
   markNotificationAsRead = (id) => {
-    console.log(`Notification ${id} has been marked as read`);
-  }
+     console.log(`Notification ${id} has been marked as read`);
+  };
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -48,12 +48,13 @@ export class App extends React.Component {
 
   render() {
     const { user } = this.state;
-    const { isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer, loginRequest, listNotifications } = this.props;
+    const { displayDrawer, isLoggedIn, displayNotificationDrawer, hideNotificationDrawer, loginRequest, listNotifications } = this.props;
+    console.log("voici ma liste de notification", listNotifications);
     const isIndex = true;
     const listCourses = [
       { id: 1, name: 'ES6', credit: 60 },
       { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 }
+      { id: 3, name: 'React', credit: 40 },
     ];
 
     const LoginWithLogging = WithLogging(Login);
@@ -73,13 +74,13 @@ export class App extends React.Component {
           />
           <div className={css(styles.app)}>
             <Header />
-            {user.isLoggedIn ? (
+            {isLoggedIn ? (
               <BodySectionWithMarginBottom title="Course list">
                 <CourseList listCourses={listCourses} />
               </BodySectionWithMarginBottom>
             ) : (
               <BodySectionWithMarginBottom title="Log in to continue">
-                <LoginWithLogging logIn={this.logIn} />
+                <LoginWithLogging logIn={loginRequest} />
               </BodySectionWithMarginBottom>
             )}
             <BodySection title="News from the School">
@@ -113,9 +114,11 @@ const styles = StyleSheet.create({
   },
 });
 
+// Mettez à jour mapStateToProps et mapDispatchToProps
 export function mapStateToProps(state) {
   const notificationsMap = state.notifications.get('notifications');
   const listNotifications = notificationsMap ? notificationsMap.toJS() : [];
+
   return {
     isLoggedIn: state.ui.get('isUserLoggedIn'),
     displayDrawer: state.ui.get('isNotificationDrawerVisible'),
@@ -128,23 +131,24 @@ const mapDispatchToProps = {
   hideNotificationDrawer,
   loginRequest,
   fetchNotifications,
-}
+};
 
+// Définir propTypes et defaultProps
 App.propTypes = {
-  isLoggedIn: PropTypes.bool.isRequired,
   displayDrawer: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
   displayNotificationDrawer: PropTypes.func.isRequired,
   hideNotificationDrawer: PropTypes.func.isRequired,
   loginRequest: PropTypes.func.isRequired,
   fetchNotifications: PropTypes.func.isRequired,
   listNotifications: PropTypes.array.isRequired,
-}
+};
 
 App.defaultProps = {
-  isLoggedIn: false,
   displayDrawer: false,
-  displayNotificationDrawer: () => { },
-  hideNotificationDrawer: () => { }
-}
+  isLoggedIn: false,
+  displayNotificationDrawer: () => {},
+  hideNotificationDrawer: () => {},
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -10,7 +10,7 @@ class NotificationItem extends React.PureComponent {
       __html: PropTypes.string
     }),
     markAsRead: PropTypes.func,
-    id: PropTypes.number
+    id: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -23,6 +23,7 @@ class NotificationItem extends React.PureComponent {
 
   handleClick = () => {
     const { markAsRead, id } = this.props
+    console.log("ceci est l'id", id )
     if (markAsRead && id !== null) {
       markAsRead(id)
     }
