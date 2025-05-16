@@ -21,11 +21,11 @@ describe('App Component', () => {
     const loginMock = jest.fn();
 
     wrapper = shallow(<App
-      displayNotificationDrawer={displayNotificationDrawerMock}
-      hideNotificationDrawer={hideNotificationDrawerMock}
-      loginRequest={loginMock}
-      isLoggedIn={false}
-    />);
+        displayNotificationDrawer={displayNotificationDrawerMock}
+        hideNotificationDrawer={hideNotificationDrawerMock}
+        loginRequest={loginMock}
+        isLoggedIn={false}
+      />);
   });
 
   it('renders App without crashing', () => {
@@ -50,11 +50,11 @@ describe('App Component', () => {
     expect(wrapper.find('Login').length).toBe(0);
   });
 
-  it('should display CourseList when user is logged in', () => {
-    wrapper.setProps({ isLoggedIn: true });
+it('should display CourseList when user is logged in', () => {
+  wrapper.setProps({ isLoggedIn: true });
 
-    expect(wrapper.find('CourseList').length).toBe(1);
-  });
+  expect(wrapper.find('CourseList').length).toBe(1);
+});
 });
 
 describe('<App />', () => {
@@ -62,7 +62,7 @@ describe('<App />', () => {
   const logOutMock = jest.fn();
 
   beforeEach(() => {
-    wrapper = shallow(<App login={() => { }} logOut={logOutMock} />);
+    wrapper = shallow(<App login={() => {}} logOut={logOutMock} />);
   });
 
   it('should call logOut and alert when Ctrl + h is pressed', () => {
@@ -75,7 +75,7 @@ describe('<App />', () => {
 
     expect(logOutMock).toHaveBeenCalled();
 
-  });
+});
 });
 
 describe('mapStateToProps', () => {

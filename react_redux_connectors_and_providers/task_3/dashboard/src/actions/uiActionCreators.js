@@ -71,7 +71,7 @@ export function loginRequest(email, password) {
 
     try {
       // Make the API call using node-fetch
-      const response = await fetch('/dist/login-success.json');
+      const response = await fetch('/login-success.json');
 
       if (!response.ok) {
         // If the response is not OK, throw an error to trigger the failure
